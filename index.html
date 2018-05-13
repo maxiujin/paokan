@@ -136,12 +136,15 @@ getUserIP(function(ip){
 
 
 var regiondic={};
+$( document ).ready(function() {
+    console.log( "ready!" );
+
 $.getJSON('http://ipinfo.io', function(data){
     regiondic=data;
     console.log('what the fuck!!!!')
     console.log(data.country, data.city);  /// public IP, and country and city
 });
- 
+ });
 
 
  var x = "User-agent header sent: " + navigator.userAgent;
