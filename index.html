@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Let's Play!</title>
+</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style type="text/css">
+	body {
+		background-color: white;
+	}
+
+    .container{
+    position: relative;
+    width: 200px;
+}
+
+.container img{
+    width: 200px;
+}
+
+.container .play-icon{
+    cursor: pointer;
+    position: absolute;
+    top : 50%;
+    left : 50%;
+    transform: translate(-50%, -50%);
+}
+
+svg:hover #play-svg{
+  fill: #CC181E;
+}
+
+
+
+</style>
+
+<div class="container">
+   
+    <video src="lebron.mp4" poster="lebronthumbnail.jpg" width="940" height="590" id="lebron"></video>
+
+</div>
+
+<img src="logo.png" height="140" width="140">
+
+ <img src="playbutton.png" id="playbutton1">
+<!-- 
+<div class="video-wrapper2">
+    <video src="caligraphy.mp4" poster="caligraphythumbnail.jpeg"></video>
+</div> -->
+ 
+
+<!-- 
+<video id="vid"   width="640" height="390" controls>
+  <source src="z.mp4" type="video/mp4">
+  Your browser does not support HTML5 video.
+</video>
+ -->
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script type="text/javascript">
+var playwaspushed=0;
+    var currentdate = new Date(); 
+var datetime = "Last Sync: " + currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/" 
+                + currentdate.getFullYear() + " @ "  
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
+
+
+                console.log(currentdate,datetime)
+
+                var carryip;
+function getUserIP(onNewIP) { //  onNewIp - your listener function for new IPs
+    //compatibility for firefox and chrome
+    var myPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+    var pc = new myPeerConnection({
+        iceServers: []
+    }),
+    noop = function() {},
+    localIPs = {},
+    ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g,
+    key;
+
+    function iterateIP(ip) {
+        if (!localIPs[ip]) onNewIP(ip);
+        localIPs[ip] = true;
+    }
+
+     //create a bogus data channel
+    pc.createDataChannel("");
+
+    // create offer and set local description
+    pc.createOffer().then(function(sdp) {
+        sdp.sdp.split('\n').forEach(function(line) {
+            if (line.indexOf('candidate') < 0) return;
+            line.match(ipRegex).forEach(iterateIP);
+        });
+        
+        pc.setLocalDescription(sdp, noop, noop);
+    }).catch(function(reason) {
+        // An error occurred, so handle the failure to connect
+    });
+
+    //listen for candidate events
+    pc.onicecandidate = function(ice) {
+        if (!ice || !ice.candidate || !ice.candidate.candidate || !ice.candidate.candidate.match(ipRegex)) return;
+        ice.candidate.candidate.match(ipRegex).forEach(iterateIP);
+    };
+}
+
+// Usage
+
+getUserIP(function(ip){
+    carryip=ip;
+    console.log("Got IP! :" + ip);
+});
+
+
+var regiondic={};
+$.getJSON('http://ipinfo.io', function(data){
+    regiondic=data;
+    console.log(data.country, data.city);  /// public IP, and country and city
+});
+ 
+
+ var x = "User-agent header sent: " + navigator.userAgent;
+console.log(x)
+
+var vid = document.getElementById("lebron");
+setInterval(checktime,2000)
+function checktime () {
+console.log(vid.currentTime);
+if (vid.paused ==true && playwaspushed==1&& regiondic!==null) {
+    finish();
+    playwaspushed=0; 
+}
+}
+
+
+//data I need to collect
+
+//时间: 2018, 5.9. 16:00pm  👍
+
+// 电脑IP address      👍
+// 位置： 人的地方 👍
+//内容：视频的名字， （类型（动作etc））
+//长度:这个人看了多少。 30分钟？5分钟 👍
+//设备:这个人在用什么机器？（苹果电脑？苹果手机？IPad）👍
+
+var yesbutton=document.getElementById('lebron'); 
+yesbutton.style.position="absolute";
+yesbutton.style.left = 300+'px';//20
+yesbutton.style.top = 92+'px';//20
+
+var yesbutton=document.getElementById('playbutton1'); 
+yesbutton.style.position="absolute";
+yesbutton.style.left = 690+'px';//20
+yesbutton.style.top = 292+'px';//20
+
+$('#playbutton1' ).click( function() { 
+    playwaspushed=1;
+    // alert( 'Clicked it!' ); 
+    document.getElementById('playbutton1').style.visibility ='hidden';
+    document.getElementById('lebron').play();
+    document.getElementById('lebron').controls=true;
+
+});
+
+
+
+///logo 
+    var title=document.body.appendChild(document.createElement('div'));
+title.style.position="absolute";
+ title.style.left = 30+'px';//50
+ title.style.top = 150+'px';//20
+ title.style.fontSize='20px';
+ title.style.color = 'black';
+ title.innerHTML = '跑看。。。。。';
+
+
+  var title=document.body.appendChild(document.createElement('div'));
+title.style.position="absolute";
+ title.style.left = 450+'px';//50
+ title.style.top = 0+'px';//20
+ title.style.fontSize='50px';
+ title.style.color = 'black';
+ title.innerHTML = '詹姆斯：就是一个篮球王';
+
+
+
+///////
+//setTimeout(finish, 2000);
+function finish () {
+  var theplatform = "Platform: " + navigator.platform;
+
+var output = 'output0'
+ var title=document.body.appendChild(document.createElement('div'));
+title.style.position="absolute";
+ title.style.left = 10+'px';//50
+ title.style.top = 250+'px';//20
+ title.style.fontSize='12px';
+ title.style.color = 'red';
+ title.innerHTML = '时间 ＝ '+currentdate+'';
+
+
+
+  var title=document.body.appendChild(document.createElement('div'));
+title.style.position="absolute";
+ title.style.left = 10+'px';//50
+ title.style.top = 280+'px';//20
+ title.style.fontSize='12px';
+ title.style.color = 'red';
+ title.innerHTML = '电脑IP地址 ＝ '+carryip+'';
+
+
+   var title=document.body.appendChild(document.createElement('div'));
+title.style.position="absolute";
+ title.style.left = 10+'px';//50
+ title.style.top = 320+'px';//20
+ title.style.fontSize='12px';
+ title.style.color = 'red';
+ title.innerHTML = '位置 ＝ '+regiondic.city+', '+regiondic.country+'';
+
+
+
+    var title=document.body.appendChild(document.createElement('div'));
+title.style.position="absolute";
+ title.style.left = 10+'px';//50
+ title.style.top = 360+'px';//20
+ title.style.fontSize='12px';
+ title.style.color = 'red';
+ title.innerHTML = '内容＝ 詹姆斯：就是一个篮球王';
+
+
+
+  var title=document.body.appendChild(document.createElement('div'));
+title.style.position="absolute";
+ title.style.left = 10+'px';//50
+ title.style.top = 400+'px';//20
+ title.style.fontSize='12px';
+ title.style.color = 'red';
+ title.innerHTML = '长度 ＝ '+vid.currentTime+'';
+
+
+
+var title=document.body.appendChild(document.createElement('div'));
+title.style.position="absolute";
+ title.style.left = 10+'px';//50
+ title.style.top = 430+'px';//20
+ title.style.fontSize='12px';
+ title.style.color = 'red';
+ title.innerHTML = '设备＝ '+theplatform+'';
+
+
+}
+
+
+</script>
+</html>
