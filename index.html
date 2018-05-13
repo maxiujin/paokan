@@ -73,6 +73,7 @@ svg:hover #play-svg{
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 <script type="text/javascript">
+
 var playwaspushed=0;
     var currentdate = new Date(); 
 var datetime = "Last Sync: " + currentdate.getDate() + "/"
@@ -86,6 +87,7 @@ var datetime = "Last Sync: " + currentdate.getDate() + "/"
                 console.log(currentdate,datetime)
 
                 var carryip;
+                // getUserIP();
 function getUserIP(onNewIP) { //  onNewIp - your listener function for new IPs
     //compatibility for firefox and chrome
     var myPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
@@ -132,12 +134,15 @@ getUserIP(function(ip){
 });
 
 
+
 var regiondic={};
 $.getJSON('http://ipinfo.io', function(data){
     regiondic=data;
+    console.log('what the fuck!!!!')
     console.log(data.country, data.city);  /// public IP, and country and city
 });
  
+
 
  var x = "User-agent header sent: " + navigator.userAgent;
 console.log(x)
