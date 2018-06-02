@@ -1,284 +1,397 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Let's Play!</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8">
+<title>Title of the document</title>
 </head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">	
-<style type="text/css">
 
+
+<style type="text/css">
 .page-wrap {
 width: 960px;
 margin: 0 auto;
 position: relative;
 }
 
-
-.WebContainer{
-    width:100%;
-    min-width:1000px;
-    height:auto;
-} 
 	body {
-		background-color: white;
-	}
-
-    .container{
-    position: relative;
-    width: 200px;
+ 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  font-family: 'Roboto', Tahoma, Arial, sans-serif;
+  line-height: 1.5;
+  font-size: 13px;
 }
 
-.container img{
-    width: 200px;
+form {
+  outline: 0;
+  float: left;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
 }
 
-.container .play-icon{
-    cursor: pointer;
-    position: absolute;
-    top : 50%;
-    left : 50%;
-    transform: translate(-50%, -50%);
+form > .textbox {
+  outline: 0;
+  height: 42px;
+  width: 244px;
+  line-height: 42px;
+  padding: 0 16px;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #212121;
+  border: 0;
+  float: left;
+  -webkit-border-radius: 4px 0 0 4px;
+  border-radius: 4px 0 0 4px;
 }
 
-svg:hover #play-svg{
-  fill: #CC181E;
+form > .textbox:focus {
+  outline: 0;
+  background-color: #FFF;
 }
 
+form > .button {
+  outline: 0;
+  background: none;
+  background-color: rgba(38, 50, 56, 0.8);
+  float: left;
+  height: 42px;
+  width: 42px;
+  text-align: center;
+  line-height: 42px;
+  border: 0;
+  color: #FFF;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: 16px;
+  text-rendering: auto;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  -webkit-transition: background-color .4s ease;
+  transition: background-color .4s ease;
+  -webkit-border-radius: 0 4px 4px 0;
+  border-radius: 0 4px 4px 0;
+}
 
+form > .button:hover {
+  background-color: rgba(0, 150, 136, 0.8);
+}
+
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 
 </style>
 
-<div class="container">
-   
-    <video src="lebron.mp4" poster="lebronthumbnail.jpg" width="940" height="590" id="lebron"></video>
+<form id="searchbox" onsubmit="return false">
+  <input type="text" class="textbox" placeholder="Search" id="searchvalue">
+  <input title="Search" value="查" type="submit" class="button" onclick="getvalue()">
+</form>
 
-</div>
+<div class="loader" id="theloader"></div>
 
-<img src="logo.png" height="140" width="140">
-
- <img src="playbutton.png" id="playbutton1">
-<!-- 
-<div class="video-wrapper2">
-    <video src="caligraphy.mp4" poster="caligraphythumbnail.jpeg"></video>
-</div> -->
- 
-
-<!-- 
-<video id="vid"   width="640" height="390" controls>
-  <source src="z.mp4" type="video/mp4">
-  Your browser does not support HTML5 video.
-</video>
- -->
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
 <script type="text/javascript">
+	var icontitle5=document.body.appendChild(document.createElement('div'));
+	var icontitle55=document.body.appendChild(document.createElement('div'));
+	var icontitle4=document.body.appendChild(document.createElement('div'));
+	var icontitle44=document.body.appendChild(document.createElement('div'));
+	var icontitle3=document.body.appendChild(document.createElement('div'));
+	var icontitle33=document.body.appendChild(document.createElement('div'));
+	var icontitle2=document.body.appendChild(document.createElement('div'));
+	var icontitle22=document.body.appendChild(document.createElement('div'));
+	var icontitle1=document.body.appendChild(document.createElement('div'));
+	var icontitle11=document.body.appendChild(document.createElement('div'));
 
-var playwaspushed=0;
-    var currentdate = new Date(); 
-var datetime = "Last Sync: " + currentdate.getDate() + "/"
-                + (currentdate.getMonth()+1)  + "/" 
-                + currentdate.getFullYear() + " @ "  
-                + currentdate.getHours() + ":"  
-                + currentdate.getMinutes() + ":" 
-                + currentdate.getSeconds();
+var icontitle=document.body.appendChild(document.createElement('div'));
+
+document.getElementById('theloader').style.visibility='hidden';
+	var peopleicon=document.getElementById('searchbox'); 
+peopleicon.style.position="absolute";
+peopleicon.style.left = 500+'px';//20
+peopleicon.style.top = 10+'px';//20
 
 
-                console.log(currentdate,datetime)
 
-                var carryip;
-                // getUserIP();
-function getUserIP(onNewIP) { //  onNewIp - your listener function for new IPs
-    //compatibility for firefox and chrome
-    var myPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
-    var pc = new myPeerConnection({
-        iceServers: []
-    }),
-    noop = function() {},
-    localIPs = {},
-    ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g,
-    key;
 
-    function iterateIP(ip) {
-        if (!localIPs[ip]) onNewIP(ip);
-        localIPs[ip] = true;
+
+    
+ function getvalue () {
+    	console.log(document.getElementById('searchvalue').value);
+
+    	var thevalue = document.getElementById('searchvalue').value;
+
+
+
+
+ icontitle.style.position="absolute";
+ icontitle.style.left = 510+'px';//50
+ icontitle.style.top = 340+'px';//20
+ icontitle.style.fontSize='20px';
+ icontitle.style.color = 'black';
+ icontitle.innerHTML = 'Analyzing information about the Stock';
+
+	var peopleicon=document.getElementById('theloader'); 
+peopleicon.style.visibility = 'visible';
+peopleicon.style.position="absolute";
+peopleicon.style.left = 590+'px';//20
+peopleicon.style.top = 380+'px';//20
+
+
+setTimeout(sendresults, 2000);
+
+function sendresults () {
+	 icontitle.innerHTML = '';
+	  icontitle5.innerHTML = '';
+	   icontitle55.innerHTML = '';
+	   icontitle1.innerHTML = '';
+	   icontitle11.innerHTML = '';
+	    icontitle2.innerHTML = '';
+	   icontitle22.innerHTML = '';
+	    icontitle3.innerHTML = '';
+	   icontitle33.innerHTML = '';
+	    icontitle4.innerHTML = '';
+	   icontitle44.innerHTML = '';
+	    icontitle5.innerHTML = '';
+	   icontitle55.innerHTML = '';
+	document.getElementById('theloader').style.visibility='hidden';
+
+
+//var icontitle5=document.body.appendChild(document.createElement('div'));
+ icontitle5.style.position="absolute";
+ icontitle5.style.left = 580+'px';//50
+ icontitle5.style.top = 110+'px';//20
+ icontitle5.style.fontSize='20px';
+ icontitle5.style.color = 'blue';
+ icontitle5.innerHTML = '5  stock';
+
+// var icontitle55=document.body.appendChild(document.createElement('div'));
+ icontitle55.style.position="absolute";
+ icontitle55.style.left = 580+'px';//50
+ icontitle55.style.top = 140+'px';//20
+ icontitle55.style.fontSize='20px';
+ icontitle55.style.color = 'black';
+ icontitle55.innerHTML = '5  stock';
+
+
+//var icontitle1=document.body.appendChild(document.createElement('div'));
+ icontitle1.style.position="absolute";
+ icontitle1.style.left = 10+'px';//50
+ icontitle1.style.top = 210+'px';//20
+ icontitle1.style.fontSize='20px';
+ icontitle1.style.color = 'blue';
+ icontitle1.innerHTML = '1 stock';
+
+ //var icontitle11=document.body.appendChild(document.createElement('div'));
+ icontitle11.style.position="absolute";
+ icontitle11.style.left = 10+'px';//50
+ icontitle11.style.top = 240+'px';//20
+ icontitle11.style.fontSize='20px';
+ icontitle11.style.color = 'black';
+ icontitle11.innerHTML = '1 stock';
+
+
+ //var icontitle2=document.body.appendChild(document.createElement('div'));
+ icontitle2.style.position="absolute";
+ icontitle2.style.left = 10+'px';//50
+ icontitle2.style.top = 710+'px';//20
+ icontitle2.style.fontSize='20px';
+ icontitle2.style.color = 'blue';
+ icontitle2.innerHTML = '2 stock';
+
+ //var icontitle22=document.body.appendChild(document.createElement('div'));
+ icontitle22.style.position="absolute";
+ icontitle22.style.left = 10+'px';//50
+ icontitle22.style.top = 740+'px';//20
+ icontitle22.style.fontSize='20px';
+ icontitle22.style.color = 'black';
+ icontitle22.innerHTML = '2 stock';
+
+
+//var icontitle3=document.body.appendChild(document.createElement('div'));
+ icontitle3.style.position="absolute";
+ icontitle3.style.left = 1010+'px';//50
+ icontitle3.style.top = 310+'px';//20
+ icontitle3.style.fontSize='20px';
+ icontitle3.style.color = 'blue';
+ icontitle3.innerHTML = '3 stock';
+
+
+ //var icontitle33=document.body.appendChild(document.createElement('div'));
+ icontitle33.style.position="absolute";
+ icontitle33.style.left = 1010+'px';//50
+ icontitle33.style.top = 380+'px';//20
+ icontitle33.style.fontSize='20px';
+ icontitle33.style.color = 'black';
+ icontitle33.innerHTML = '3 stock';
+
+  //var icontitle4=document.body.appendChild(document.createElement('div'));
+ icontitle4.style.position="absolute";
+ icontitle4.style.left = 1010+'px';//50
+ icontitle4.style.top = 610+'px';//20
+ icontitle4.style.fontSize='20px';
+ icontitle4.style.color = 'blue';
+ icontitle4.innerHTML = '4 stock';
+
+  // var icontitle44=document.body.appendChild(document.createElement('div'));
+ icontitle44.style.position="absolute";
+ icontitle44.style.left = 1010+'px';//50
+ icontitle44.style.top = 680+'px';//20
+ icontitle44.style.fontSize='20px';
+ icontitle44.style.color = 'black';
+ icontitle44.innerHTML = '4 stock';
+
+
+	if (thevalue=='apple stock') {
+		
+		 icontitle1.innerHTML = 'https://finance.yahoo.com/quote/AAPL/ ';
+		  icontitle11.innerHTML = '190.24+3.37 (+1.80%)';
+		  icontitle11.style.color='green';
+
+		  icontitle2.innerHTML = 'https://www.cnbc.com/2018/05/04/if-you-put-1000-in-apple-10-years-ago-heres-how-much-youd-have-now.html';
+		  icontitle22.innerHTML = '"Investing in Apple has proven to be a good move, and expert investors are taking notice"';
+		  icontitle22.style.color='green';
+
+
+		   icontitle3.innerHTML = 'https://www.marketwatch.com/story/apple-stock-rises-after-ubs-hikes-price-target-due-to-rising-mix-2018-06-01';
+
+		    icontitle33.innerHTML = '"Apple Inc. AAPL, +0.04% shares are up 0.8% in Friday trading after UBS analyst Steven Milunovich raised his price."';
+		  icontitle33.style.color='green';
+
+		    icontitle4.innerHTML = 'https://www.fool.com/investing/2018/05/30/apple-inc-vs-texas-instruments-which-dividend-stoc.aspx';
+		     icontitle44.innerHTML = '"Texas Instruments is probably a better stock for investors looking for meaningful income today"';
+		  icontitle44.style.color='red';
+
+		     icontitle5.innerHTML = 'https://www.nasdaq.com/symbol/aapl/historical';
+
+		       icontitle55.innerHTML = '"$190.25*  3.381.81%"';
+		  icontitle55.style.color='green';
+
+		  icontitle.innerHTML = 'Apple Stock looks good, you could keep or sell.';
+
+	}
+
+	if (thevalue=='bitcoin') {
+		 icontitle1.innerHTML = 'https://cointelegraph.com/news/bitcoin-ethereum-ripple-bitcoin-cash-eos-litecoin-cardano-stellar-iota-price-analysis-june-01';
+		  icontitle11.innerHTML = 'We believe that Bitcoin is trading in a large range of $6,075.04 to $12,172.43';
+		  icontitle11.style.color='orange';
+
+		  icontitle2.innerHTML = 'https://www.ccn.com/bitcoin-price-has-bottomed-and-will-rally-soon-fundstrat-analyst/';
+		  icontitle22.innerHTML = '"Bitcoin’s price has hit rock-bottom"';
+		  icontitle22.style.color='red';
+
+
+		   icontitle3.innerHTML = 'https://www.express.co.uk/finance/city/968262/Bitcoin-price-usd-news-share-cryptocurrency-ethereum-Ripple-buy-bitcoin-value';
+
+		    icontitle33.innerHTML = '"The finance expert studied bitcoin, ethereum and Ripple and found that a bullish mid-term event could be in store as the cryptocurrencies continue to attract buyers."';
+		  icontitle33.style.color='green';
+
+		    icontitle4.innerHTML = 'https://www.cnbc.com/2018/05/31/buy-bitcoin-now-while-its-still-cheap-says-cryptocurrency-investor.html';
+		     icontitle44.innerHTML = '"So now is a good time to buy."';
+		  icontitle44.style.color='green';
+
+		     icontitle5.innerHTML = 'https://cointelegraph.com/news/visa-card-payments-failing-in-uk-europe-highlighting-need-for-decentralized-options';
+
+		       icontitle55.innerHTML = '"Visa has said that their card payments are experiencing disruptions "';
+		  icontitle55.style.color='green';
+
+		  icontitle.innerHTML = 'news about Bitcoin seems moderate.';
+	}
+
+
+	if (thevalue=='baidu stock') {
+		 icontitle1.innerHTML = 'https://finance.yahoo.com/quote/BIDU/';
+		  icontitle11.innerHTML = '248.46+5.90 (+2.43%)';
+		  icontitle11.style.color='green';
+
+		  icontitle2.innerHTML = 'https://finance.yahoo.com/news/baidu-inc-adr-225-looks-170908209.html';
+		  icontitle22.innerHTML = '"BIDU stock is firing on all cylinders these days and worth investors"';
+		  icontitle22.style.color='green';
+
+
+		   icontitle3.innerHTML = 'https://investorplace.com/2018/05/baidu-inc-adr-bidu-stock-how-looks-reasonable/';
+
+		    icontitle33.innerHTML = '"BIDU stock cooperates and new highs are narrowly made over the next couple months, reaching above $280"';
+		  icontitle33.style.color='green';
+
+		    icontitle4.innerHTML = 'https://seekingalpha.com/article/4170891-baidu-lot-like';
+		     icontitle44.innerHTML = '"Baidu (BIDU) shares are still rallying since the company announced its most recent quarterly earnings on the 26th of April"';
+		  icontitle44.style.color='green';
+
+		     icontitle5.innerHTML = 'https://www.fool.com/investing/2018/05/22/when-will-baidu-stock-hit-a-new-all-time-high.aspx';
+
+		       icontitle55.innerHTML = '"Investors have been applauding Baidu\'s move to get back to basics, even as it continues to throw money at artificial intelligence initiative"';
+		  icontitle55.style.color='green';
+
+		  icontitle.innerHTML = 'Baidu Stock looks good, you could keep or sell.';
+	}
+}
+
+
+
+
+ //  'https://finance.yahoo.com/quote/BIDU/',
+ //  'https://finance.yahoo.com/news/baidu-inc-adr-225-looks-170908209.html',
+ //  'https://investorplace.com/2018/05/baidu-inc-adr-bidu-stock-how-looks-reasonable/',
+ //  'https://investorplace.com/2018/05/bidu-stock-good-reasons/',
+ //  'https://www.marketwatch.com/investing/stock/bidu',
+ //  'https://www.fool.com/investing/2018/05/22/when-will-baidu-stock-hit-a-new-all-time-high.aspx',
+ //  'https://www.fool.com/quote/nasdaq/baidu/bidu',
+ //  'https://www.fool.com/investing/2018/05/18/why-baidu-inc-stock-dropped-today.aspx',
+ //  'https://seekingalpha.com/article/4170891-baidu-lot-like'
+
+
+
+
+
+
+ //    	 'https://finance.yahoo.com/quote/AAPL/',
+ //  'https://www.cnbc.com/2018/05/04/if-you-put-1000-in-apple-10-years-ago-heres-how-much-youd-have-now.html',
+ //  'https://www.marketwatch.com/story/apple-stock-rises-after-ubs-hikes-price-target-due-to-rising-mix-2018-06-01',
+ //  'https://www.marketwatch.com/story/if-apple-makes-big-news-at-its-developers-conference-next-week-it-would-be-big-news-2018-06-01',
+ //  'https://stocktwits.com/symbol/AAPL',
+ //  'https://www.investors.com/news/technology/click/apple-stock-aapl-price-target-increase-wwdc/',
+ //  'https://www.nasdaq.com/symbol/aapl/historical',
+ //  'https://www.fool.com/investing/2018/05/30/apple-inc-vs-texas-instruments-which-dividend-stoc.aspx'
+
+
+
+// 'https://news.bitcoin.com/',
+//   'https://cointelegraph.com/news/bitcoin-ethereum-ripple-bitcoin-cash-eos-litecoin-cardano-stellar-iota-price-analysis-june-01',
+//   'https://www.ccn.com/bitcoin-price-has-bottomed-and-will-rally-soon-fundstrat-analyst/',
+//   'https://www.ccn.com/no-bull-run-in-sight-investors-target-long-term-bitcoin-price-rally/',
+//   'https://www.express.co.uk/finance/city/968262/Bitcoin-price-usd-news-share-cryptocurrency-ethereum-Ripple-buy-bitcoin-value',
+//   'https://www.cnbc.com/2018/05/31/buy-bitcoin-now-while-its-still-cheap-says-cryptocurrency-investor.html',
+//   'https://twitter.com/btctn%3Flang%3Den',
+//   'https://www.youtube.com/watch%3Fv%3DHrd1eHecpRA',
+//   'https://cryptonews.com/news/bitcoin-news/'
+
+
+
+
     }
 
-     //create a bogus data channel
-    pc.createDataChannel("");
 
-    // create offer and set local description
-    pc.createOffer().then(function(sdp) {
-        sdp.sdp.split('\n').forEach(function(line) {
-            if (line.indexOf('candidate') < 0) return;
-            line.match(ipRegex).forEach(iterateIP);
-        });
-        
-        pc.setLocalDescription(sdp, noop, noop);
-    }).catch(function(reason) {
-        // An error occurred, so handle the failure to connect
-    });
-
-    //listen for candidate events
-    pc.onicecandidate = function(ice) {
-        if (!ice || !ice.candidate || !ice.candidate.candidate || !ice.candidate.candidate.match(ipRegex)) return;
-        ice.candidate.candidate.match(ipRegex).forEach(iterateIP);
-    };
-}
-
-// Usage
-
-getUserIP(function(ip){
-    carryip=ip;
-    console.log("Got IP! :" + ip);
-});
-
-
-
-var regiondic={};
-$( document ).ready(function() {
-    console.log( "ready!" );
-
-$.getJSON('http://ipinfo.io', function(data){
-    regiondic=data;
-    console.log('what the fuck!!!!')
-    console.log(data.country, data.city);  /// public IP, and country and city
-});
- });
-
-
- var x = "User-agent header sent: " + navigator.userAgent;
-console.log(x)
-
-var vid = document.getElementById("lebron");
-setInterval(checktime,2000)
-function checktime () {
-console.log(vid.currentTime);
-if (vid.paused ==true && playwaspushed==1&& regiondic!==null) {
-    finish();
-    playwaspushed=0; 
-}
-}
-
-
-//data I need to collect
-
-//时间: 2018, 5.9. 16:00pm  👍
-
-// 电脑IP address      👍
-// 位置： 人的地方 👍
-//内容：视频的名字， （类型（动作etc））
-//长度:这个人看了多少。 30分钟？5分钟 👍
-//设备:这个人在用什么机器？（苹果电脑？苹果手机？IPad）👍
-
-var yesbutton=document.getElementById('lebron'); 
-yesbutton.style.position="absolute";
-yesbutton.style.left = 300+'px';//20
-yesbutton.style.top = 92+'px';//20
-
-var yesbutton=document.getElementById('playbutton1'); 
-yesbutton.style.position="absolute";
-yesbutton.style.left = 690+'px';//20
-yesbutton.style.top = 292+'px';//20
-
-$('#playbutton1' ).click( function() { 
-    playwaspushed=1;
-    // alert( 'Clicked it!' ); 
-    document.getElementById('playbutton1').style.visibility ='hidden';
-    document.getElementById('lebron').play();
-    document.getElementById('lebron').controls=true;
-
-});
-
-
-
-///logo 
-    var title=document.body.appendChild(document.createElement('div'));
-title.style.position="absolute";
- title.style.left = 30+'px';//50
- title.style.top = 150+'px';//20
- title.style.fontSize='20px';
- title.style.color = 'black';
- title.innerHTML = '跑看。。。。。';
-
-
-  var title=document.body.appendChild(document.createElement('div'));
-title.style.position="absolute";
- title.style.left = 450+'px';//50
- title.style.top = 0+'px';//20
- title.style.fontSize='50px';
- title.style.color = 'black';
- title.innerHTML = '詹姆斯：就是一个篮球王';
-
-
-
-///////
-//setTimeout(finish, 2000);
-function finish () {
-  var theplatform = "Platform: " + navigator.platform;
-
-var output = 'output0'
- var title=document.body.appendChild(document.createElement('div'));
-title.style.position="absolute";
- title.style.left = 10+'px';//50
- title.style.top = 250+'px';//20
- title.style.fontSize='12px';
- title.style.color = 'red';
- title.innerHTML = '时间 ＝ '+currentdate+'';
-
-
-
-  var title=document.body.appendChild(document.createElement('div'));
-title.style.position="absolute";
- title.style.left = 10+'px';//50
- title.style.top = 280+'px';//20
- title.style.fontSize='12px';
- title.style.color = 'red';
- title.innerHTML = '电脑IP地址 ＝ '+carryip+'';
-
-
-   var title=document.body.appendChild(document.createElement('div'));
-title.style.position="absolute";
- title.style.left = 10+'px';//50
- title.style.top = 320+'px';//20
- title.style.fontSize='12px';
- title.style.color = 'red';
- title.innerHTML = '位置 ＝ '+regiondic.city+', '+regiondic.country+'';
-
-
-
-    var title=document.body.appendChild(document.createElement('div'));
-title.style.position="absolute";
- title.style.left = 10+'px';//50
- title.style.top = 360+'px';//20
- title.style.fontSize='12px';
- title.style.color = 'red';
- title.innerHTML = '内容＝ 詹姆斯：就是一个篮球王';
-
-
-
-  var title=document.body.appendChild(document.createElement('div'));
-title.style.position="absolute";
- title.style.left = 10+'px';//50
- title.style.top = 400+'px';//20
- title.style.fontSize='12px';
- title.style.color = 'red';
- title.innerHTML = '长度 ＝ '+vid.currentTime+'';
-
-
-
-var title=document.body.appendChild(document.createElement('div'));
-title.style.position="absolute";
- title.style.left = 10+'px';//50
- title.style.top = 430+'px';//20
- title.style.fontSize='12px';
- title.style.color = 'red';
- title.innerHTML = '设备＝ '+theplatform+'';
-
-
-}
-
-
+	
 </script>
+
 </html>
