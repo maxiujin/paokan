@@ -1,526 +1,997 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8">
-  <title>Full Page Search</title>
-  
-  
-  <link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css'>
 
-<style type="text/css">
-  html {
-  height: 100%;
-}
-body {
-  min-height: 100%;
-  background-color: #fea154;
-}
-::-webkit-input-placeholder {
-  color: #212129;
-}
-@-webkit-keyframes spin {
-  from {
-    -webkit-transform: scale(1) rotate(0deg);
-    transform: scale(1) rotate(0deg);
-  }
-  to {
-    -webkit-transform: scale(1) rotate(360deg);
-    transform: scale(1) rotate(360deg);
-  }
-}
-@keyframes spin {
-  from {
-    -webkit-transform: scale(1) rotate(0deg);
-    transform: scale(1) rotate(0deg);
-  }
-  to {
-    -webkit-transform: scale(1) rotate(360deg);
-    transform: scale(1) rotate(360deg);
-  }
-}
-.content {
-  position: absolute;
-  width: 100%;
-  height: calc(100% - 75px);
-  top: 75px;
-  overflow: hidden;
-  margin: auto;
-  text-align: center;
-}
-.content .results {
-  bottom: 0;
-  height: 0;
-  padding: 0;
-  margin: 0;
-  position: absolute;
-  visibility: hidden;
-  width: 60%;
-  border: 2px solid #212129;
-  list-style: none;
-  background: #fafafa;
-  border-top-left-radius: 2px;
-  border-top-right-radius: 2px;
-  right: 20%;
-  box-shadow: 0px -1px 3px 0px rgba(254, 119, 8, 0.5);
-  -webkit-transition: all 0.5s ease-in-out 0;
-  transition: all 0.5s ease-in-out 0;
-}
-.content .results li {
-  border-bottom: 2px solid #e6e6e6;
-  padding: 10px;
-  margin: 0 auto;
-  width: 98%;
-}
-.content .results.show {
-  overflow: auto;
-  display: block;
-  visibility: visible;
-  height: 100%;
-  -webkit-transition: all 0.5s ease-in-out 1s;
-  transition: all 0.5s ease-in-out 1s;
-}
-.content .results.show.no-wait {
-  -webkit-transition: all 0.5s ease-in-out 0 !important;
-  transition: all 0.5s ease-in-out 0 !important;
-}
-.panel-container {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: transparent;
-  overflow: hidden;
-}
-.panel-container .top-panel {
-  z-index: 50;
-  width: 100%;
-  height: 50%;
-  border-bottom: 1px solid #fea154;
-  position: relative;
-  top: 10;
-  background: #212129;
-  -webkit-transition: all 0.5s ease-in-out 0s;
-  transition: all 0.5s ease-in-out 0s;
-}
-.panel-container .bottom-panel {
-  z-index: 50;
-  width: 100%;
-  height: 50%;
-  bottom: 0;
-  background: #212129;
-  -webkit-transition: all 0.5s ease-in-out 0s;
-  transition: all 0.5s ease-in-out 0s;
-}
-.panel-container .search-container {
-  position: absolute;
-  left: calc(50% - 45px);
-  top: calc(50% - 45px);
-  z-index: 100;
-}
-.panel-container .search-container .search-button {
-  width: 90px;
-  height: 90px;
-  border-radius: 50px;
-  border: none;
-  background: #fea154;
-  color: #212129;
-  font-size: 25px;
-  outline: none;
-  box-shadow: inset 0px 0px 3px 0px rgba(254, 133, 33, 0.9);
-  -webkit-transition: all 0.5s ease-in-out 0s;
-  transition: all 0.5s ease-in-out 0s;
-}
-.panel-container .search-container .search-button i.spinning {
-  -webkit-animation: spin 1s infinite linear;
-          animation: spin 1s infinite linear;
-}
-.panel-container .search-container input {
-  border: none;
-  border-bottom: 2px solid #212129;
-  background: transparent;
-  width: 0px;
-  font-size: 25px;
-  visibility: hidden;
-  -webkit-appearance: none;
-  color: #212129;
-  -webkit-transform: translate(-175px, -9px);
-          transform: translate(-175px, -9px);
-  font-weight: 100;
-}
-.panel-container .search-container input:focus {
-  outline: none;
-}
-.panel-container.show-search {
-  -webkit-transition: all 0.5s ease-in-out 0s;
-  transition: all 0.5s ease-in-out 0s;
-}
-.panel-container.show-search .top-panel {
-  -webkit-transform: translate(0, -50px);
-          transform: translate(0, -50px);
-  box-shadow: 0px 1px 2px 0px rgba(254, 133, 33, 0.9);
-}
-.panel-container.show-search .bottom-panel {
-  -webkit-transform: translate(0, 50px);
-          transform: translate(0, 50px);
-  box-shadow: 0px -1px 2px 0px rgba(254, 133, 33, 0.9);
-}
-.panel-container.show-search .search-container .search-button {
-  -webkit-transform: translate(-150px, 0);
-          transform: translate(-150px, 0);
-  box-shadow: none;
-  -webkit-transition: -webkit-transform 0.5s ease-in-out 0.5s;
-  transition: -webkit-transform 0.5s ease-in-out 0.5s;
-  transition: transform 0.5s ease-in-out 0.5s;
-  transition: transform 0.5s ease-in-out 0.5s, -webkit-transform 0.5s ease-in-out 0.5s;
-  cursor: default;
-}
-.panel-container.show-search .search-container input {
-  visibility: visible;
-  width: 300px;
-  position: relative;
-  -webkit-transition: all 0.5s ease-in-out 1s;
-  transition: all 0.5s ease-in-out 1s;
-}
-.panel-container.show-results .top-panel {
-  box-shadow: none;
-  -webkit-transform: translate(0, -100%);
-          transform: translate(0, -100%);
-  -webkit-transition: -webkit-transform 0.5s ease-in-out 0s;
-  transition: -webkit-transform 0.5s ease-in-out 0s;
-  transition: transform 0.5s ease-in-out 0s;
-  transition: transform 0.5s ease-in-out 0s, -webkit-transform 0.5s ease-in-out 0s;
-}
-.panel-container.show-results .bottom-panel {
-  box-shadow: none;
-  -webkit-transform: translate(0, 100%);
-          transform: translate(0, 100%);
-  -webkit-transition: -webkit-transform 0.5s ease-in-out 0s;
-  transition: -webkit-transform 0.5s ease-in-out 0s;
-  transition: transform 0.5s ease-in-out 0s;
-  transition: transform 0.5s ease-in-out 0s, -webkit-transform 0.5s ease-in-out 0s;
-}
-.panel-container.show-results .search-container {
-  -webkit-transition: all 0.5s ease-in-out 1s;
-  transition: all 0.5s ease-in-out 1s;
-  top: 0;
-}
-.panel-container.show-results .search-container .search-button {
-  background: transparent;
-  box-shadow: none;
-}
-</style>
+<head>
+    <meta charset="UTF-8">
+	   <!--       Toys R' Us -->
+
+	<!-- <input type="text" id="input"><br> -->
+ <!--  <textarea id="input" cols="40" rows="5"></textarea> -->
+
+ <img src="giraffe.png" id="bot">
+<!-- <textarea class = "typewriter" id="one" style="resize: none;background-color: rgba(0, 0, 0, 0); border-color: rgba(0, 0, 0, 0)" rows="3" cols="50"> 我要查我的订单 -->
+</textarea>
+<p id = "one" class="typewriter"></p>
+
+<p id = "two" class="humanwrite"></p>
+<input type="text" id="userinput" placeholder="请告诉Chatbot你需要什么帮助。" size = "100";  >
+<img src="toylogo.png" id="logo">
 </head>
 
 <body>
-<div class="panel-container">
-  <div class="top-panel"></div>
-  <div class="search-container">
-    <form>
-      <button type="button" class="search-button"><i class="glyphicon glyphicon-search"></i></button>
-      <input type="text" class="search-input" placeholder="搜索。。。">
-    </form>
-  </div>
-  <div class="bottom-panel"></div>
+    <div class="socket">
+      <div class="gel center-gel">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c1 r1">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c2 r1">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c3 r1">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c4 r1">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c5 r1">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c6 r1">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      
+      <div class="gel c7 r2">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      
+      <div class="gel c8 r2">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c9 r2">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c10 r2">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c11 r2">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c12 r2">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c13 r2">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c14 r2">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c15 r2">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c16 r2">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c17 r2">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c18 r2">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c19 r3">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c20 r3">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c21 r3">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c22 r3">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c23 r3">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c24 r3">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c25 r3">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c26 r3">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c28 r3">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c29 r3">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c30 r3">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c31 r3">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c32 r3">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c33 r3">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c34 r3">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c35 r3">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c36 r3">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      <div class="gel c37 r3">
+        <div class="hex-brick h1"></div>
+        <div class="hex-brick h2"></div>
+        <div class="hex-brick h3"></div>
+      </div>
+      
+    </div>
+    <div id="supericon">
+  <div class="outerCircle"></div>
+  <div class="innerCircle"></div>
+  <div class="icon"></div>
 </div>
+  </body>
+<style type="text/css">
 
-<div class="content">
-  <ul class="results">
-    <br>
-    <br>
-  <!--   <img src="https://chinaccelerator.com/wp-content/uploads/2017/05/ocheng-en-logo-backgrounded.png" alt="ocheng logo"> -->
-  </ul>
-</div>
-  <button id= "b1"  onclick="budui()" >不对</button>
-  <button id= "b2"  onclick="dui()" >对</button>
-    <button id= "b3"  onclick="fumian()" >负面</button>
-      <button id= "b4"  onclick="zhongxing()" >中性</button>
-        <button id= "b5"  onclick="zhengmian()" >正面</button>
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+/*.icon {
+background: url('images/hive.png') 0 0 no-repeat;
+width: 76px;
+height: 76px;
+top: -200px;
+margin: 0 auto;
+position: relative;
+}
+.icon:hover {
+-moz-animation: rotatecircle 4s infinite linear;
+-webkit-animation: rotatecircle 4s linear;
+}
+.outerCircle {
+background-color: transparent;
+border: 8px solid rgba(97, 82, 72, 0.9);
+opacity: .9;
+border-right: 5px solid transparent;
+border-left: 5px solid transparent;
+border-radius: 100px;
+width: 103px;
+height: 103px;
+margin: 0 auto;
+-moz-animation: spinPulse 3s infinite ease-in-out;
+-webkit-animation: spinPulse 3s infinite ease-in-out;
+}
+.innerCircle {
+background-color: transparent;
+border: 5px solid rgba(189, 215, 60, 0.6);
+opacity: .9;
+border-left: 5px solid transparent;
+border-right: 5px solid transparent;
+border-radius: 100px;
+top: -110px;
+width: 92px;
+height: 92px;
+margin: 0 auto;
+position: relative;
+-moz-animation: spinoffPulse 1s infinite linear;
+-webkit-animation: spinoffPulse 1s infinite linear;
+
+}
+
+
+@-moz-keyframes spinPulse {
+    0% { -moz-transform:rotate(160deg); opacity:0; box-shadow:0 0 1px #bdd73c;}
+  50% { -moz-transform:rotate(145deg); opacity:1; }
+  100% { -moz-transform:rotate(-320deg); opacity:0; }
+}
+@-moz-keyframes spinoffPulse {
+    0% { -moz-transform:rotate(0deg); }
+  100% { -moz-transform:rotate(360deg);  }
+}
+@-webkit-keyframes spinPulse {
+    0% { -webkit-transform:rotate(160deg); opacity:0; box-shadow:0 0 1px #bdd73c; }
+  50% { -webkit-transform:rotate(145deg); opacity:1;}
+  100% { -webkit-transform:rotate(-320deg); opacity:0; }
+}
+@-webkit-keyframes spinoffPulse {
+    0% { -webkit-transform:rotate(0deg); }
+  100% { -webkit-transform:rotate(360deg); }
+}
+@-moz-keyframes rotatecircle {
+    0% { -moz-transform:rotate(0deg); }
+  100% { -moz-transform:rotate(-360deg); }
+}
+
+@-webkit-keyframes rotatecircle {
+    0% { -webkit-transform:rotate(0deg); }
+100% { -webkit-transform:rotate(-360deg); }
+}*/
+  
+  body{
+  background-color:#FFCC66;
+  font-family: "Ubuntu-Italic", "Lucida Sans", helvetica, sans; 
+}
+  p.typewriter {
+  position: relative;
+  width: 200px;
+  height: 100px;
+  text-align: center;
+  line-height: 100px;
+  background-color: #fff;
+  border: 8px solid #fff;
+  -webkit-border-radius: 30px;
+  -moz-border-radius: 30px;
+  border-radius: 30px;
+  -webkit-box-shadow: 2px 2px 4px #888;
+  -moz-box-shadow: 2px 2px 4px #888;
+  box-shadow: 2px 2px 4px #888;
+}
+
+  p.humanwrite {
+  position: relative;
+  width: 200px;
+  height: 100px;
+  text-align: center;
+  line-height: 100px;
+  background-color: #90EE90;
+  border: 8px solid  #90EE90;
+  -webkit-border-radius: 30px;
+  -moz-border-radius: 30px;
+  border-radius: 30px;
+  -webkit-box-shadow: 2px 2px 4px #888;
+  -moz-box-shadow: 2px 2px 4px #888;
+  box-shadow: 2px 2px 4px #888;
+}
+
+
+
+body{
+     /* background: #1e1e1e;*/
+      }
+      
+      .socket{
+        width: 900px;
+        height: 200px;
+        position: absolute;
+        left: 50%;
+        margin-left: -100px;
+        top: 50%;
+        margin-top: -100px;
+      }
+      
+      .hex-brick{
+        background: #FF69B4/*#ABF8FF*/;
+        width: 30px;
+        height: 17px;
+        position: absolute;
+        top: 5px;
+        animation-name: fade;
+        animation-duration: 2s;
+        animation-iteration-count: infinite;
+        -webkit-animation-name: fade;
+        -webkit-animation-duration: 2s;
+        -webkit-animation-iteration-count: infinite;
+      }
+      
+      .h2{
+        transform: rotate(60deg);
+        -webkit-transform: rotate(60deg);
+      }
+      
+      .h3{
+        transform: rotate(-60deg);
+        -webkit-transform: rotate(-60deg);
+      }
+      
+      .gel{
+        height: 30px;
+        width: 30px;  
+        transition: all .3s;
+        -webkit-transition: all .3s;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+      }
+      
+      .center-gel{
+        margin-left: -15px;
+        margin-top: -15px;
+        
+        animation-name: pulse;
+        animation-duration: 2s;
+        animation-iteration-count: infinite;
+        -webkit-animation-name: pulse;
+        -webkit-animation-duration: 2s;
+        -webkit-animation-iteration-count: infinite;
+      }
+      
+      .c1{
+        margin-left: -47px;
+        margin-top: -15px;
+      }
+      
+      .c2{
+        margin-left: -31px;
+        margin-top: -43px;
+      }
+      
+      .c3{
+        margin-left: 1px;
+        margin-top: -43px;
+      }
+      
+      .c4{
+        margin-left: 17px;
+        margin-top: -15px;
+      }
+      .c5{
+        margin-left: -31px;
+        margin-top: 13px;
+      }
+      
+      .c6{
+        margin-left: 1px;
+        margin-top: 13px;
+      }
+      
+      .c7{
+        margin-left: -63px;
+        margin-top: -43px;
+      }
+      
+      .c8{
+        margin-left: 33px;
+        margin-top: -43px;
+      }
+      
+      .c9{
+        margin-left: -15px;
+        margin-top: 41px;
+      }
+      
+      .c10{
+        margin-left: -63px;
+        margin-top: 13px;
+      }
+      
+      .c11{
+        margin-left: 33px;
+        margin-top: 13px;
+      }
+      
+      .c12{
+        margin-left: -15px;
+        margin-top: -71px;
+      }
+      
+      .c13{
+        margin-left: -47px;
+        margin-top: -71px;
+      }
+      
+      .c14{
+        margin-left: 17px;
+        margin-top: -71px;
+      }
+      
+      .c15{
+        margin-left: -47px;
+        margin-top: 41px;
+      }
+      
+      .c16{
+        margin-left: 17px;
+        margin-top: 41px;
+      }
+      
+      .c17{
+        margin-left: -79px;
+        margin-top: -15px;
+      }
+      
+      .c18{
+        margin-left: 49px;
+        margin-top: -15px;
+      }
+      
+      .c19{
+        margin-left: -63px;
+        margin-top: -99px;
+      }
+      
+      .c20{
+        margin-left: 33px;
+        margin-top: -99px;
+      }
+      
+      .c21{
+        margin-left: 1px;
+        margin-top: -99px;
+      }
+      
+      .c22{
+        margin-left: -31px;
+        margin-top: -99px;
+      }
+      
+      .c23{
+        margin-left: -63px;
+        margin-top: 69px;
+      }
+      
+      .c24{
+        margin-left: 33px;
+        margin-top: 69px;
+      }
+      
+      .c25{
+        margin-left: 1px;
+        margin-top: 69px;
+      }
+      
+      .c26{
+        margin-left: -31px;
+        margin-top: 69px;
+      }
+      
+      .c27{
+        margin-left: -79px;
+        margin-top: -15px;
+      }
+      
+      .c28{
+        margin-left: -95px;
+        margin-top: -43px;
+      }
+      
+      .c29{
+        margin-left: -95px;
+        margin-top: 13px;
+      }
+      
+      .c30{
+        margin-left: 49px;
+        margin-top: 41px;
+      }
+      
+      .c31{
+        margin-left: -79px;
+        margin-top: -71px;
+      }
+      
+      .c32{
+        margin-left: -111px;
+        margin-top: -15px;
+      }
+      
+      .c33{
+        margin-left: 65px;
+        margin-top: -43px;
+      }
+      
+      .c34{
+        margin-left: 65px;
+        margin-top: 13px;
+      }
+      
+      .c35{
+        margin-left: -79px;
+        margin-top: 41px;
+      }
+      
+      .c36{
+        margin-left: 49px;
+        margin-top: -71px;
+      }
+      
+      .c37{
+        margin-left: 81px;
+        margin-top: -15px;
+      }
+      
+      .r1{
+        animation-name: pulse;
+        animation-duration: 2s;
+        animation-iteration-count: infinite;
+        animation-delay: .2s;
+        -webkit-animation-name: pulse;
+        -webkit-animation-duration: 2s;
+        -webkit-animation-iteration-count: infinite;
+        -webkit-animation-delay: .2s;
+      }
+      
+      .r2{
+        animation-name: pulse;
+        animation-duration: 2s;
+        animation-iteration-count: infinite;
+        animation-delay: .4s;
+        -webkit-animation-name: pulse;
+        -webkit-animation-duration: 2s;
+        -webkit-animation-iteration-count: infinite;
+        -webkit-animation-delay: .4s;
+      }
+      
+      .r3{
+        animation-name: pulse;
+        animation-duration: 2s;
+        animation-iteration-count: infinite;
+        animation-delay: .6s;
+        -webkit-animation-name: pulse;
+        -webkit-animation-duration: 2s;
+        -webkit-animation-iteration-count: infinite;
+        -webkit-animation-delay: .6s;
+      }
+      
+      .r1 > .hex-brick{
+        animation-name: fade;
+        animation-duration: 2s;
+        animation-iteration-count: infinite;
+        animation-delay: .2s;
+        -webkit-animation-name: fade;
+        -webkit-animation-duration: 2s;
+        -webkit-animation-iteration-count: infinite;
+        -webkit-animation-delay: .2s;
+      }
+      
+      .r2 > .hex-brick{
+        animation-name: fade;
+        animation-duration: 2s;
+        animation-iteration-count: infinite;
+        animation-delay: .4s;
+        -webkit-animation-name: fade;
+        -webkit-animation-duration: 2s;
+        -webkit-animation-iteration-count: infinite;
+        -webkit-animation-delay: .4s;
+      }
+      
+      .r3 > .hex-brick{
+        animation-name: fade;
+        animation-duration: 2s;
+        animation-iteration-count: infinite;
+        animation-delay: .6s;
+        -webkit-animation-name: fade;
+        -webkit-animation-duration: 2s;
+        -webkit-animation-iteration-count: infinite;
+        -webkit-animation-delay: .6s;
+      }
+      
+      
+      @keyframes pulse{
+        0%{
+          -webkit-transform: scale(1);
+          transform: scale(1);
+        }
+        
+        50%{
+          -webkit-transform: scale(0.01);
+          transform: scale(0.01);
+        }
+        
+        100%{
+          -webkit-transform: scale(1);
+          transform: scale(1);
+        }
+      }
+      
+      @keyframes fade{
+        0%{
+          background: #FF69B4;
+        }
+        
+        50%{
+          background: #9932CC;
+        }
+        
+        100%{
+          background: #9932CC;
+        }
+      }
+      
+      @-webkit-keyframes pulse{
+        0%{
+          -webkit-transform: scale(1);
+          transform: scale(1);
+        }
+        
+        50%{
+          -webkit-transform: scale(0.01);
+          transform: scale(0.01);
+        }
+        
+        100%{
+          -webkit-transform: scale(1);
+          transform: scale(1);
+        }
+      }
+      
+     /* @-webkit-keyframes fade{
+        0%{
+          background: #ABF8FF;
+        }
+        
+        50%{
+          background: #389CA6;
+        }
+        
+        100%{
+          background: #ABF8FF;
+        }
+      }*/
+</style>
+
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-     <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script> 
-<script>
- var config = {
-    apiKey: "AIzaSyDBJi4p8SjZLFDf-iFKc8ZstkXyy2FLkV4",
-    authDomain: "gongyinao.firebaseapp.com",
-    databaseURL: "https://gongyinao.firebaseio.com",
-    projectId: "gongyinao",
-    storageBucket: "gongyinao.appspot.com",
-    messagingSenderId: "792226516451"
-  };
-  firebase.initializeApp(config);
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.0.4/d3.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.6.1/firebase.js"></script>
 
-//activate database
-  var database = firebase.database();
+  <script src="//cdn.opencpu.org/opencpu-0.4.js"></script>
+  
+<script type="text/javascript">
+  //emotion
+var yuan = document.getElementById("supericon");
+yuan.style.position="absolute";
+yuan.style.left = 900+'px';
+yuan.style.top = 250+'px';
 
-var visualalgo = document.body.appendChild(document.createElement('div'));
-document.getElementById('b1').style.visibility ='hidden';
-document.getElementById('b2').style.visibility ='hidden';
-document.getElementById('b3').style.visibility ='hidden';
-document.getElementById('b4').style.visibility ='hidden';
-document.getElementById('b5').style.visibility ='hidden';
-  var poshao =0;
-  var neghao=0;
-var neuhao=0;
-  var inputs;
-    var rainy;
-    
-var zhishiku =new Array;
-var zhishikunegative =new Array;
-var zhishikupositive =new Array;
-var makepositive=0;
-    
+ $('.outerCircle').hide();
+   $('.innerCircle').hide();
 
-var uselesswords =["这","那", "然", "先","我","你","呢","到","也","您","多","就","着","此","次","说","回","前","国","让","动","出","去","吃","是","些","据","跟","根","西","东","北","南","位","与","于","只", "之","后","儿","而","一","二","貳","叁","三","肆","四","伍","五","六","陆","七","柒","气","捌","八","九","玖","十","拾","为","什","么","吗","关","百","亿","不","对","仅","刘","等","得","的","家","们","门","个","了","谁", "她", "他", "它","字","子"]
-var neutraladj= new Array();
+var cumulativeEmotion =[];
+var txt = document.getElementById('userinput');
+txt.style['height'] = '30px';
+
 var posadj = new Array();//forcalculations
-//posadj = ["雄伟","漂亮","美丽","方便","了不起","美女","帅","高兴","心情","激动","笑","爱情","善良","聪明","帅哥","香醇","透明","晶莹","纯净","典雅","开朗","舒适","清澈","颓废","温柔","惊艳","淡漠","淡定","冷静","端庄","时尚","快乐","丰盈", "圆滑", "喜欢","满意","特别","厉害","爱","好"];
+ posadj = [ "雄伟", "漂亮", "美丽", "方便", "了不起", "美女", "帅", "高兴", "心情", "激动", "笑", "爱情", "善良", "聪明", "帅哥", "香醇", "透明", "晶莹", "纯净", "典雅", "开朗", "舒适", "清澈", "颓废", "温柔", "惊艳", "淡漠", "淡定", "冷静", "端庄", "时尚", "快乐", "丰盈", "圆滑", "喜欢", "满意", "特别", "厉害", "爱", "好", "良好", "机会", "可能性多大", "礼物", "得好", "尊敬", "激动人心", "感谢", "机会", "信心", "正轨", "鼓励", "支持", "不错", "不错", "运气", "酷炫", "松一口气", "公平", "恻隐", "谢谢", "帮助", "非常理解", "奉献", "无私的", "奖赏", "光辉", "友谊", "壮阔", "放松", "对此略为敏感", "紧张", "紧张", "愉", "保护", "尊敬", "♥", "😄", "😎", "😺", "😸", "😃", "😀", "😆", "☺️", "😊", "😇", "😍", "😘", "😚", "😋", "❤️", "热心", "好人", "出色", "受益", "感到自豪", "聪明", "赢", "乐", "美好", "好吃", "公平", "舒服", "平静", "英雄", "有趣", "对待", "持续", "正确", "治疗", "荣誉", "皆醉我独醒", "利益", "正",  "伟", "美", "幽默", "伟大", "坚持", "赞", "魔性", "清流", "说的👍", "大快人心", "真相了", "真相了", "经济实力", "前提有一定的经济实力", "👏", "超级", "超级棒", "很棒", "很棒", "非常棒", "耿直", "心静", "很亮", "加油", "开心", "身体健康", "积极", "敬佩", "佩服", "天赋", "天赋异禀", "有才", "楼主奶奶这也太牛了吧！大赞！期待下文！好奇问下楼主可是我大南通人", "233333", "666", "平安", "瑕疵", "棒棒", "欣欣向荣", "登高望远", "锦绣前程", "朴素大方", "壮志凌云", "志存高远", "大展身手", "礼貌", "彬彬有礼", "精力充沛", "文质彬彬", "举止庄重", "体魄健壮", "胸怀大志", "任劳任怨", "任劳任怨", "没有礼貌", "腐败", "的好", "作弊", "搞怪", "好交情", "十分", "改善", "改善", "好转", "感到自豪", "扩张", "赢得", "我会受益", "受益", "我喜欢", "很好", "完美的", "热心", "我想你", "我按时", "有趣", "赞同", "最好的", "平等", "了解", "明白我", "好主意", "祝贺", "我们接受", "我接受", "爱哟", "尊重" ];
 var negadj = new Array();//for calculations
- //negadj =["紧张","忧虑","愤怒","害怕","野蛮","隐晦","阴霾","恐龙","伤心","生气","伪装","杀", "我靠", "我操", "傻逼", "哭泣","哭粗","笨","很差","丑","沮丧","郁闷", "悲伤", "悲", "伤害", "吵架", "打架","讨厌"];
-var negcounter = ["不","坏","没"];
+negadj =[ "紧张", "忧虑", "愤怒", "害怕", "野蛮", "隐晦", "阴霾", "恐龙", "伤心", "生气", "伪装", "杀", "我靠", "我操", "傻逼", "哭泣", "哭粗", "笨", "很差", "丑", "沮丧", "郁闷", "悲伤", "悲", "伤害", "吵架", "打架", "讨厌", "艰难", "不好", "帮派成员", "不好", "不好", "迟到", "伤者", "伤", "死", "急", "枪了", "打你", "严重", "事故", "惊吓", "枪击受害者", "受害者", "受害", "死亡", "擦伤", "危险", "射杀", "凶犯", "嫌犯", "破事", "我还没找到", "身亡", "还要", "订单还没", "生你气", "暴怒", "惹人厌", "烦", "颠覆", "诋毁", "吵架", "吵哭", "疾病", "勒瘫", "太坏", "紧张", "搞砸", "损害", "惩罚", "抱怨", "抢走", "牢骚", "可怜", "闭嘴", "争执", "吵闹", "侵蚀", "差劲", "囚牢房", "疼", "累", "紧张", "难", "hate", "😞", "😔", "😟", "😣", "😖", "😫", "😩", "😤", "😠", "😡", "😱", "😨", "😰", "😢", "😥", "😭", "😓", "💔", "仙人板板", "奶奶的腿的", "你冷酷你无情你无理取闹", "遗憾", "挣扎", "恶心", "恶心", "争议", "失去了", "可怕", "粗鲁", "疑问", "打破", "懒", "害怕", "批评", "很差", "悲惨", "愚蠢", "重复了一个错误", "失败", "无法处理", "压力", "被撕破", "撕破", "降级", "孤独", "哭泣", "太久", "病", "生病", "骗", "崩溃", "复杂", "沮丧","恐慌", "饿死", "糟", "讨厌", "太多", "偷了", "罪", "犯", "指控", "犯罪", "恨", "劣势", "莫名其妙", "不爱", "我不爱", "皆醉", "厌恶", "戾气", "浪费", "不舒服", "监", "狱", "不减", "哭", "怀念", "强迫", "怕", "我怕", "我怕", "我想不", "斗争", "很吵", "毒", "没法接受", "很贵的", "超不", "什么鬼", "太恐怖", "恐怖", "这么差", "好生气", "不懂", "疯", "骂", "担心", "消极", "闷骚", "消灭", "泯灭", "嫉妒", "嫉妒", "嫉妒", "坏运气", "说不清", "混蛋", "体罚", "罚款", "很惨", "很惨", "跑题了", "运气差", "理解的狭隘了", "霸气", "瑕疵", "不正确", "冷漠", "无动于衷", "疲乏", "劳累", "无生气", "无礼", "被激怒", "困惑", "不快", "不愉快的", "烦闷", "难受", "难受", "压抑", "郁闷", "沉郁", "阴郁", "抑郁寡欢", "惭愧", "丢脸", "丢人", "亏心", "愧疚", "难堪", "沮丧", "没有好", "很臭", "腐败", "分手", "离婚", "无知", "拉肚子", "没有意义的", "没有意义", "他妈的", "他妈的", "作弊牟取", "作弊", "感染", "无情", "亡", "失去", "后悔", "失望", "我很忙", "我忙", "我看不", "我很痛", "很痛", "痛", "太贵", "很贵", "被撕破", "不满意", "我不", "很弱", "太弱", "虐待", "不准时", "我必须批评你", "我放弃", "我无", "丑陋", "傻", "我不", "太小", "谎", "太严格", "太冷", "很冷", "我不懂", "忽视", "疑虑", "感冒", "堵车", "太慢" ];
+
+var negcounter = ["不"];
 var neutralcounter =["太","非常","很"];
+var visualalgo = document.body.appendChild(document.createElement('div'));
 
-var sendpos = new Array();
-var sendneg = new Array();
 
-  var visualalgo4 = document.body.appendChild(document.createElement('div4'));
+var logo = document.getElementById("logo");
+logo.style.position="absolute";
+logo.style.left = 950+'px';
+logo.style.top = -50+'px'; 
 
-// var msg2 ='negative'
-//       var ref2=database.ref(msg2);
-// ref2.push(negadj);
-getpositive();
-function getpositive () {
+//emotion
+  var Botresponse;
 
-var ref = database.ref('positive')
-ref.on('value',gotData, errData);
+  var conversationCounter=0; 
+   $('.socket').hide();
+  document.getElementById("two").style.visibility = "hidden";
+    var humaninput = document.getElementById('userinput');
+    var secondactivated =0;
+//document.body.style.backgroundColor = "#D3D3D3";
+AIspeak();
+function AIspeak () {
 
-function gotData(data) {
-//console.log(data.val())
-var coordinates =data.val();
-//console.log(coordinates)
-var keys = Object.keys(coordinates)
-console.log(coordinates)
-for(var i=0; i<keys.length;i++) {
+//Bot page position
+ var oBtn = document.getElementById('bot');
+oBtn.style.position="absolute";
+oBtn.style.left = 20+'px';
+ oBtn.style.top = 20+'px'; 
 
-  var p=keys[i];
+  var gho = document.getElementById('one');
+gho.style.position="absolute";
+gho.style.left = 300+'px';
+ gho.style.top = 100+'px'; 
+Botresponse = '你好，我怎么会帮您？'
+//order of combo
 
-var shuju=coordinates[p]
-
-posadj=shuju;
-
- 
+if (conversationCounter==1) {
+if (humaninput.value.indexOf('订单')>-1) {
+  Botresponse='可以，请输入你的手机号码';
 }
-
-  posadj=data.val();
-
-
-//console.log('inside positive', posadj)
-}
-function errData(err) {
-   console.log(err)
-}
-
-
-}
-var grandnumber;
-
-getlearningrate();
-
-function getlearningrate () {
-console.log('hello')
-var ref = database.ref('sum')
-ref.on('value',gotData, errData);
-var playersRef = ref;
-
-// playersRef.orderByChild("sum").on("child_added", function(data) {
-//    console.log(data.val());
-//    grandnumber=data.val();
-// });
-
-function gotData(data) {
- grandnumber=data.val();
-  grandnumber =grandnumber[0];
- console.log('magic', grandnumber)
-
-
-
-
-
-}
-function errData(err) {
-   console.log(err)
-}
-
-
-}
-
-getnegative();
-function getnegative () {
-
-var ref = database.ref('negative')
-ref.on('value',gotData, errData);
-
-function gotData(data) {
-console.log(data.val())
-var coordinates =data.val();
-console.log(coordinates)
-var keys = Object.keys(coordinates)
-console.log(coordinates)
-for(var i=0; i<keys.length;i++) {
-
-  var p=keys[i];
-
-var shuju=coordinates[p]
-
-negadj=shuju;
-
- 
-}
-
-  negadj=data.val();
-
-
-//console.log('inside', negadj)
-}
-function errData(err) {
-   console.log(err)
-}
-
+else
+conversationCounter=conversationCounter-1;
 
 }
 
 
-var enterwaspressed=0;
+///
 
-// 
+if (conversationCounter==2) {
+if (humaninput.value.indexOf('麻烦')>-1) {
+  Botresponse='不好意思，我明白你不要浪费时间我很快帮助你。';
+  secondactivated=1;
+  $(".typewriter").width(560);
 
-var selfknowledge = posadj.concat(negadj).concat(negcounter).concat(neutralcounter);
-console.log('my knowledge', selfknowledge)
+  
+}
+else
+conversationCounter=conversationCounter-1;
+
+}
 
 
-var doublenegative=0;
-    var animationTime = 500;
+if (conversationCounter==3) {
+
+  if (humaninput.value.indexOf('12345678')>-1) {
+  Botresponse='你的订单是 “盈佳新威尔机械战警”／现价:￥249.00／2017 －11－7买的。';
+  secondactivated=1;
+  $(".typewriter").width(560);
+
+  
+}
+else
+conversationCounter=conversationCounter-1;
+}
 
 
-$(function() {
-  init();
 
-  var that = this;
-  $(".search-input").on("keydown", function(e) {
-    var val = $(this).val();
-    if (e.keyCode == 13) {
-      doublenegative=0;
-      enterwaspressed=1;
-    
-      console.log(grandnumber, 'pee')
-      //reset counters
-      //visualalgo.style.visibility ='visible';
-      document.getElementById('b1').style.visibility ='hidden';
-document.getElementById('b2').style.visibility ='hidden';
-      poshao =0;
-     neghao=0;
-     neuhao=0;
-     doublenegative=0;
-     //
-getnegative();
-getpositive();
+if (conversationCounter==4) {
 
-    setTimeout(ai, 4000)
-      e.preventDefault();
-      if (!val) {
-        return;
-      }
-      hideResults();
+  if (humaninput.value.indexOf('太慢')>-1) {
+  Botresponse='谢谢你的耐心，最好是我们更快，你的订单会2017-11-14 到。';
+  secondactivated=1;
+  $(".typewriter").width(560);
 
-      // Do some AJAX call here to get results
-      getSearchResults(val).then(function(results) {
-        // Do something with results here before calling showResults
-        //
-        //
-        showResults();
-      });
+  
+}
+else
+conversationCounter=conversationCounter-1;
+}
+
+
+
+if (conversationCounter==5) {
+
+  if (humaninput.value.indexOf('谢谢')>-1) {
+  Botresponse='不客气，谢谢您，如果你有问题，或者要聊天儿，请找我。';
+  secondactivated=1;
+  $(".typewriter").width(560);
+//zongemo();
+  
+}
+else
+conversationCounter=conversationCounter-1;
+}
+
+//
+
+
+
+
+writemessage();
+
+
+
+
+
+
+
+
+//order of combo
+
+
+
+
+
+}
+///human
+
+function writemessage () {
+var text = Botresponse;
+
+var length = text.length;
+var timeOut;
+var character = 0;
+
+
+(function typeWriter() { 
+    timeOut = setTimeout(function() {
+      //console.log('cset')
+        character++;
+        var type = text.substring(0, character);
+        $('.typewriter').text(type);
+     
+
+        typeWriter();
+        
+        if (character == length) {
+            Botresponse=' ';
+            clearTimeout(timeOut);
+                 if (secondactivated==1) {
+          setTimeout(secondMessage,2000);
+        }
+        }
+        
+    }, 200);
+}());
+
+
+}
+
+
+
+
+function secondMessage () {
+  console.log('in here')
+if (secondactivated==1 && conversationCounter==2) {
+  secondactivated=0; 
+  Botresponse='请输入你的手机号码。';
+    $(".typewriter").width(200);
+  writemessage();
+}
+
+}
+
+
+
+
+
+
+////human part
+
+humaninput.style.position="absolute";
+humaninput.style.left = 350+'px';
+ humaninput.style.top = 600+'px'; 
+
+
+$(document).keypress(function (e) {
+    if (e.which == 13) {
+conversationCounter++;
+ document.getElementById("two").style.visibility = "visible"; 
+var inputz = document.getElementById('two');
+inputz.style.position="absolute";
+inputz.style.left = 350+'px';
+inputz.style.top = 300+'px'; 
+document.getElementById("two").innerHTML = humaninput.value; 
+
+var stringp = document.getElementById("two").innerHTML = humaninput.value; 
+console.log('knee',stringp.length)
+if (stringp.length>=12) {
+  console.log('insideeeee',stringp.length)
+  $(".humanwrite").width(400);
+}
+  $('.socket').show();
+        AIspeak();
+        qingxu();
     }
-  });
-
-  function init() {
-    var searchButton = $(".search-button");
-    searchButton.on("click", function(e) {
-      var panelContainer = $(".panel-container");
-      if (!panelContainer.hasClass("show-search")) {
-        panelContainer.addClass("show-search");
-        setTimeout(function() {
-          $(".search-input").focus();
-        }, animationTime * 3);
-      }
-    });
-  }
-
-  function getSearchResults(val) {
-    return new Promise(function(resolve, reject) {
-      var results = [];
-
-      setTimeout(function() {
-        resolve(results);
-      }, 2000);
-    });
-  }
-
-  function showResults() {
-    var panelContainer = $(".panel-container");
-    var results = $(".results");
-    var searchIcon = $(".search-button i");
-
-    panelContainer.addClass("show-search show-results");
-    searchIcon.toggleClass("glyphicon-search glyphicon-refresh spinning");
-    results.addClass("show");
-
-    // After first run, change result.show class to have no transition animation delay
-    if (!results.hasClass("no-wait")) {
-      setTimeout(function() {
-        results.addClass("no-wait");
-      }, animationTime * 2);
-    }
-  }
-
-  function hideResults() {
-    var panelContainer = $(".panel-container");
-    var results = $(".results");
-    var searchIcon = $(".search-button i");
-
-    if (!panelContainer.hasClass("show-results")) {
-      panelContainer.removeClass("show-search");
-    }
-
-    results.removeClass("show");
-    searchIcon.toggleClass("glyphicon-search glyphicon-refresh spinning");
-  }
 });
 
 
 
-function ai () {
-  //save sum
+//emotion
 
+function qingxu () {
+  var poshao =0;
+ var neghao=0;
+var neuhao=0;
+
+var doublenegative=0;
 var budebu=0;
-makepositive=0;
+var makepositive=0;
+  var inputs = document.getElementById("two").innerHTML = humaninput.value;
+for(var z=0; z< negadj.length;z++) {
+var compare = negadj[z];
 
- inputs =  $(".search-input").val();
- if (inputs.indexOf("不得不")>-1 ||inputs.indexOf("而不")>-1 ||inputs.indexOf("不了")>-1 ) {
-  budebu=1;
-  console.log('i am budebu')
- }
- console.log('posadj = zhishikupositive', posadj)
-     console.log('negadj = zhishikunegative', negadj)
 
-if (zhishikupositive.length>=1) {
-posadj=zhishikupositive;
-console.log('posadj = zhishikupositive')
+if (inputs.indexOf(compare)>-1) {
+  neghao++
+  console.log('nhl',compare)
+
+
+  var index = inputs.indexOf(compare);
+var index2 = inputs.indexOf('但');
+var secondindex = index2 - index;
+
+if (secondindex<=2&&inputs.indexOf('但')>1) {
+  console.log('dan rule');
+  //neghao=neghao-1;
 }
 
-if (zhishikunegative.length>=1) {
-  negadj=zhishikunegative;
-  console.log('negadj = zhishikunegative')
+//if bu is after a negative word 无知不是错
+var splitwords = inputs.slice(" ");
+var buindex = splitwords.indexOf("不");
+var meindex = splitwords.indexOf("没");
+var cancel=0;
+var check=compare.slice(" ");
+if (check.indexOf("不")>-1) {
+  console.log('blanket')
+cancel=1;
+}
+if (cancel==0) {
+if (index < buindex || index< meindex) {
+  //neghao=neghao-2;
+  console.log('denzel',splitwords,buindex,meindex,index)
 }
 
+}
+
+}
+
+
+
+}
+
+
+//pos
 
 for(var p=0; p< posadj.length;p++) {
 var compare = posadj[p];
@@ -550,55 +1021,6 @@ console.log('trg',checkindex, tyu,checkindex2,checkindex3)
 
 
 }
-
-
-//negative
-
-for(var z=0; z< negadj.length;z++) {
-var compare = negadj[z];
-//console.log(compare)
-
-if (inputs.indexOf(compare)>-1) {
-  neghao++
-  console.log('nhl',compare)
-  // if (inputs.indexOf("我不") >-1) {
-  //   neghao+=2;
-  // }
-
-  var index = inputs.indexOf(compare);
-var index2 = inputs.indexOf('但');
-var secondindex = index2 - index;
-
-if (secondindex<=2&&inputs.indexOf('但')>1) {
-  console.log('dan rule');
-  neghao=neghao-1;
-}
-
-//if bu is after a negative word 无知不是错
-var splitwords = inputs.slice(" ");
-var buindex = splitwords.indexOf("不");
-var meindex = splitwords.indexOf("没");
-var cancel=0;
-var check=compare.slice(" ");
-if (check.indexOf("不")>-1) {
-  console.log('blanket')
-cancel=1;
-}
-if (cancel==0) {
-if (index < buindex || index< meindex) {
-  neghao=neghao-2;
-  console.log('denzel',splitwords,buindex,meindex,index)
-}
-
-}
-
-}
-
-
-
-}
-
-
 
 //negcounter
 var checj=0;
@@ -716,8 +1138,8 @@ if (dontincrease==0) {
 var checkneutralonot = neuhao-neghao;
 var checkneutralonot2 = neuhao-poshao;
 if (checkneutralonot>=15 ||checkneutralonot2>=15 ) {//|| (makepositive==1 && neghao>poshao)
-  itsneutral=1;
-  console.log('my new brain',zhishiku)
+  //itsneutral=1;
+  
 }
 
 var negate=0;
@@ -778,8 +1200,9 @@ if (doublenegative==1||doublenegative==3) {
 if (poshao>=neuhao ||neghao>=neuhao) {
   negate==1; 
 }
-console.log('output', poshao,neghao,neuhao,makepositive,doublenegative)
+
 console.log(makepositive)
+console.log('output', poshao,neghao,neuhao,makepositive,doublenegative)
 
 if (poshao>neghao || makepositive==1) {
 console.log('WHjjj', poshao, neghao, makepositive)
@@ -788,15 +1211,15 @@ console.log('WHjjj', poshao, neghao, makepositive)
 }
  visualalgo.style.position="absolute";
  visualalgo.style.fontSize='60px';
-visualalgo.style.left = 410+'px';
-  visualalgo.style.top = 250+'px';
+visualalgo.style.left = 900+'px';
+  visualalgo.style.top = 280+'px';
    var array = ['turquoise','pink','orange','chartreuse','cyan'];
  var color =  array[Math.floor(Math.random()*array.length)];
 visualalgo.style.color = 'turquoise';
 
-  visualalgo.innerHTML = '感情 = 正面';
+  visualalgo.innerHTML = '正面';//感情 = 
 
-
+cumulativeEmotion.push('pos');
   }
 
   if (inputs.length<5&&poshao==neghao) {
@@ -811,10 +1234,11 @@ if (neghao>=poshao && neghao>=1 && negate==0 ||(doublenegative==1 && itsneutral=
    
        visualalgo.style.position="absolute";
 visualalgo.style.fontSize='60px';
-visualalgo.style.left = 410+'px';
-  visualalgo.style.top = 250+'px';
+visualalgo.style.left = 900+'px';
+  visualalgo.style.top = 280+'px';
    visualalgo.style.color = 'red';
-      visualalgo.innerHTML = '感情 = 负面';
+      visualalgo.innerHTML = '负面';//感情 =
+      cumulativeEmotion.push('neg');
   // document.getElementById("image").src="sadcloud.gif";
 }
 
@@ -826,247 +1250,60 @@ if (((neuhao>poshao&&neuhao>neghao)) || itsneutral==1) {
  
        visualalgo.style.position="absolute";
 visualalgo.style.fontSize='60px';
-visualalgo.style.left = 410+'px';
-  visualalgo.style.top = 250+'px';
+visualalgo.style.left = 900+'px';
+  visualalgo.style.top = 280+'px';
 
    visualalgo.style.color = 'lime';
-      visualalgo.innerHTML = '感情 = 中性';
+      visualalgo.innerHTML = '中性';//感情 = 
+      cumulativeEmotion.push('neu');
   // document.getElementById("image").src="normalbot.gif";
 }
 }
 visualalgo.style.visibility ='visible';
 
-showaccuracy();
-//button1
-document.getElementById('b1').style.visibility ='visible';
-var positionbutton1 = document.getElementById('b1');
-positionbutton1.style.position="absolute";
-positionbutton1.style.left = 700+'px';
-  positionbutton1.style.top = 450+'px';
-//button2
-document.getElementById('b2').style.visibility ='visible';
-var positionbutton2 = document.getElementById('b2');
-positionbutton2.style.position="absolute";
-positionbutton2.style.left = 410+'px';
-  positionbutton2.style.top = 450+'px';
-
-
-
-
-}
-
-function showaccuracy () {
-
-
-
-   //4
-    visualalgo4.style.position="absolute";
-
-visualalgo4.style.left = 680+'px';
-  visualalgo4.style.top = 150+'px';
-    visualalgo4.innerHTML = '';
-      visualalgo4.innerHTML = 'Accuracy Rate = '+grandnumber+'%';
 
 
 }
 
 
+function zongemo () {
+  $('.socket').hide();
+   
+  $('.outerCircle').show();
+   $('.innerCircle').show();
 
-function dui () {
-// var positionbutton2 = document.getElementById('b2');
-visualalgo.style.position="absolute";
-visualalgo.style.left = 410+'px';
+ 
+console.log(cumulativeEmotion)
+ // $('.hex-brick').css('background', 'green'); 
+for(var i=0; i < cumulativeEmotion.length; i++) {
+    visualalgo.innerHTML = ' ';
+          visualalgo.style.position="absolute";
+visualalgo.style.fontSize='10px';
+visualalgo.style.left = 900+'px';
   visualalgo.style.top = 250+'px';
-  visualalgo.innerHTML='谢谢你。'
+     
+     var polm = cumulativeEmotion[i];
+console.log('in loop')
+     if (polm=='pos') {
+ visualalgo.innerHTML = '正面';
+     }
+    if (polm=='neg') {
+ visualalgo.innerHTML = '负面';
+     }
+   if (polm=='neu') {
+ visualalgo.innerHTML = '中性';
+     }
+}
 
 }
 
-function budui () {
-  console.log('zhao kunchong', posadj)
-visualalgo.style.visibility ='hidden';
-document.getElementById('b1').style.visibility ='hidden';
-document.getElementById('b2').style.visibility ='hidden';
-//b3 negative
-document.getElementById('b3').style.visibility ='visible';
-var positionbutton3 = document.getElementById('b3');
-positionbutton3.style.position="absolute";
-positionbutton3.style.left = 310+'px';
-  positionbutton3.style.top = 280+'px';
-
-  ///b4 neutral
-
-  document.getElementById('b4').style.visibility ='visible';
-var positionbutton4 = document.getElementById('b4');
-positionbutton4.style.position="absolute";
-positionbutton4.style.left = 520+'px';
-  positionbutton4.style.top = 280+'px'; 
-
-//positve
-  document.getElementById('b5').style.visibility ='visible';
-var positionbutton5 = document.getElementById('b5');
-positionbutton5.style.position="absolute";
-positionbutton5.style.left = 780+'px';
-  positionbutton5.style.top = 280+'px';
+///jiao ben
 
 
 
-}
-
-
-
-
-/////hand pick words in input
-
-
-var text;
-$(".search-input").click(function(e) {
-  if (enterwaspressed==1) {
-  //enterwaspressed=0;
-     text = $(".search-input").val();
-    if (window.getSelection) {
-        text = window.getSelection().toString();
-    } else if (document.selection && document.selection.type != "Control") {
-        text = document.selection.createRange().text;
-    }
-    console.log(text);
-
-  }
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//specify these hand picked words
-
-function fumian () {
-  grandnumber =grandnumber + 0.002;
-
-for(var i=0; i<inputs.length;i++) {
-
-  var checkneuron = inputs[i];
-      var newinformation=0; 
-      if (selfknowledge.indexOf(checkneuron)> -1 || checkneuron==',' || checkneuron=='.'|| checkneuron=='。'||checkneuron=='?'||checkneuron=='，'||uselesswords.indexOf(checkneuron)>-1) {
-            
-newinformation=1;
-      }
-      if (newinformation==0) {
-        sendneg.push(checkneuron);
-      }
-
-}
-if (enterwaspressed==1&&text.length>=1) {
-sendneg=text;
-}
-document.getElementById('b3').style.visibility ='hidden';
-document.getElementById('b4').style.visibility ='hidden';
-document.getElementById('b5').style.visibility ='hidden';
-console.log(zhishikunegative)
-   var ref=database.ref('negative');
-negadj=negadj.concat(sendneg);
-zhishikunegative=negadj;
-sendneg=[];
-var data = negadj;
-if (negadj.length<5) {
-  alert('problem with database', negadj)
-}
-if (negadj.length>5) {
-ref.set(data)
-}
-
-enterwaspressed=0;
-  savenewaccuracy();
-}
-
-
-
-///neutral
-function zhongxing () {
-  
-for(var i=0; i<inputs.length;i++) {
-
-  var checkneuron = inputs[i];
-      var newinformation=0; 
-      if (selfknowledge.indexOf(checkneuron)> -1 || checkneuron==',' || checkneuron=='.'|| checkneuron=='。'||checkneuron=='?'||checkneuron=='，'||uselesswords.indexOf(checkneuron)>-1) {
-            
-newinformation=1;
-      }
-      if (newinformation==0) {
-        zhishiku.push(checkneuron);
-      }
-
-
-}
-console.log(zhishiku)
-document.getElementById('b3').style.visibility ='hidden';
-document.getElementById('b4').style.visibility ='hidden';
-document.getElementById('b5').style.visibility ='hidden';
-enterwaspressed=0;
-  //savenewaccuracy();
-  
-}
-
-//positive
-
-function zhengmian () {
-   grandnumber =grandnumber + 0.002;
-  console.log('bug area',inputs)
-for(var i=0; i<inputs.length;i++) {
-
-  var checkneuron = inputs[i];
-      var newinformation=0; 
-      if (selfknowledge.indexOf(checkneuron)> -1 || checkneuron==',' || checkneuron=='.'|| checkneuron=='。'||checkneuron=='?'||checkneuron=='，'||uselesswords.indexOf(checkneuron)>-1) {
-            
-newinformation=1;
-      }
-      if (newinformation==0) {
-        console.log('buggg2', posadj)
-        console.log('buggg3', checkneuron)
-        sendpos.push(checkneuron);
-      }
-
-}
-document.getElementById('b3').style.visibility ='hidden';
-document.getElementById('b4').style.visibility ='hidden';
-document.getElementById('b5').style.visibility ='hidden';
-if (enterwaspressed==1&&text.length>=1) {
-sendpos=text;
-}
-console.log(zhishikupositive)
-    var ref=database.ref('positive');
-posadj=posadj.concat(sendpos);
-zhishikupositive=posadj;
-sendpos=[];
-var data = posadj;
-if (posadj.length<5) {
-  alert('problem with database', posadj)
-}
-if (posadj.length>5) {
-ref.set(data)
-}
-  enterwaspressed=0;
-    savenewaccuracy();
-}
-
-
-
-function savenewaccuracy () {
-var sum = [grandnumber,0,1,2,3];
-   var msg ='sum'
-       var ref=database.ref(msg);
-
-ref.set(sum);
-}
 </script>
-</body>
-</html>
+
+
+
+
+</html> 
