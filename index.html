@@ -1,394 +1,1072 @@
 <!DOCTYPE html>
 <html>
 <head>
-
-<meta charset="utf-8">
-<title>Title of the document</title>
-</head>
-
+  <meta charset="UTF-8">
+  <title>Full Page Search</title>
+  
+  
+  <link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css'>
 
 <style type="text/css">
-
-
-	body {
- 
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  font-family: 'Roboto', Tahoma, Arial, sans-serif;
-  line-height: 1.5;
-  font-size: 13px;
+  html {
+  height: 100%;
 }
-
-form {
-  outline: 0;
-  float: left;
-  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  -webkit-border-radius: 4px;
-  border-radius: 4px;
+body {
+  min-height: 100%;
+  background-color: #fea154;
 }
-
-form > .textbox {
-  outline: 0;
-  height: 42px;
-  width: 244px;
-  line-height: 42px;
-  padding: 0 16px;
-  background-color: rgba(255, 255, 255, 0.8);
-  color: #212121;
-  border: 0;
-  float: left;
-  -webkit-border-radius: 4px 0 0 4px;
-  border-radius: 4px 0 0 4px;
+::-webkit-input-placeholder {
+  color: #212129;
 }
-
-form > .textbox:focus {
-  outline: 0;
-  background-color: #FFF;
-}
-
-form > .button {
-  outline: 0;
-  background: none;
-  background-color: rgba(38, 50, 56, 0.8);
-  float: left;
-  height: 42px;
-  width: 42px;
-  text-align: center;
-  line-height: 42px;
-  border: 0;
-  color: #FFF;
-  font: normal normal normal 14px/1 FontAwesome;
-  font-size: 16px;
-  text-rendering: auto;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-  -webkit-transition: background-color .4s ease;
-  transition: background-color .4s ease;
-  -webkit-border-radius: 0 4px 4px 0;
-  border-radius: 0 4px 4px 0;
-}
-
-form > .button:hover {
-  background-color: rgba(0, 150, 136, 0.8);
-}
-
-.loader {
-  border: 16px solid #f3f3f3;
-  border-radius: 50%;
-  border-top: 16px solid #3498db;
-  width: 120px;
-  height: 120px;
-  -webkit-animation: spin 2s linear infinite; /* Safari */
-  animation: spin 2s linear infinite;
-}
-
-/* Safari */
 @-webkit-keyframes spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
+  from {
+    -webkit-transform: scale(1) rotate(0deg);
+    transform: scale(1) rotate(0deg);
+  }
+  to {
+    -webkit-transform: scale(1) rotate(360deg);
+    transform: scale(1) rotate(360deg);
+  }
 }
-
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  from {
+    -webkit-transform: scale(1) rotate(0deg);
+    transform: scale(1) rotate(0deg);
+  }
+  to {
+    -webkit-transform: scale(1) rotate(360deg);
+    transform: scale(1) rotate(360deg);
+  }
 }
-
+.content {
+  position: absolute;
+  width: 100%;
+  height: calc(100% - 75px);
+  top: 75px;
+  overflow: hidden;
+  margin: auto;
+  text-align: center;
+}
+.content .results {
+  bottom: 0;
+  height: 0;
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  visibility: hidden;
+  width: 60%;
+  border: 2px solid #212129;
+  list-style: none;
+  background: #fafafa;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+  right: 20%;
+  box-shadow: 0px -1px 3px 0px rgba(254, 119, 8, 0.5);
+  -webkit-transition: all 0.5s ease-in-out 0;
+  transition: all 0.5s ease-in-out 0;
+}
+.content .results li {
+  border-bottom: 2px solid #e6e6e6;
+  padding: 10px;
+  margin: 0 auto;
+  width: 98%;
+}
+.content .results.show {
+  overflow: auto;
+  display: block;
+  visibility: visible;
+  height: 100%;
+  -webkit-transition: all 0.5s ease-in-out 1s;
+  transition: all 0.5s ease-in-out 1s;
+}
+.content .results.show.no-wait {
+  -webkit-transition: all 0.5s ease-in-out 0 !important;
+  transition: all 0.5s ease-in-out 0 !important;
+}
+.panel-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  overflow: hidden;
+}
+.panel-container .top-panel {
+  z-index: 50;
+  width: 100%;
+  height: 50%;
+  border-bottom: 1px solid #fea154;
+  position: relative;
+  top: 10;
+  background: #212129;
+  -webkit-transition: all 0.5s ease-in-out 0s;
+  transition: all 0.5s ease-in-out 0s;
+}
+.panel-container .bottom-panel {
+  z-index: 50;
+  width: 100%;
+  height: 50%;
+  bottom: 0;
+  background: #212129;
+  -webkit-transition: all 0.5s ease-in-out 0s;
+  transition: all 0.5s ease-in-out 0s;
+}
+.panel-container .search-container {
+  position: absolute;
+  left: calc(50% - 45px);
+  top: calc(50% - 45px);
+  z-index: 100;
+}
+.panel-container .search-container .search-button {
+  width: 90px;
+  height: 90px;
+  border-radius: 50px;
+  border: none;
+  background: #fea154;
+  color: #212129;
+  font-size: 25px;
+  outline: none;
+  box-shadow: inset 0px 0px 3px 0px rgba(254, 133, 33, 0.9);
+  -webkit-transition: all 0.5s ease-in-out 0s;
+  transition: all 0.5s ease-in-out 0s;
+}
+.panel-container .search-container .search-button i.spinning {
+  -webkit-animation: spin 1s infinite linear;
+          animation: spin 1s infinite linear;
+}
+.panel-container .search-container input {
+  border: none;
+  border-bottom: 2px solid #212129;
+  background: transparent;
+  width: 0px;
+  font-size: 25px;
+  visibility: hidden;
+  -webkit-appearance: none;
+  color: #212129;
+  -webkit-transform: translate(-175px, -9px);
+          transform: translate(-175px, -9px);
+  font-weight: 100;
+}
+.panel-container .search-container input:focus {
+  outline: none;
+}
+.panel-container.show-search {
+  -webkit-transition: all 0.5s ease-in-out 0s;
+  transition: all 0.5s ease-in-out 0s;
+}
+.panel-container.show-search .top-panel {
+  -webkit-transform: translate(0, -50px);
+          transform: translate(0, -50px);
+  box-shadow: 0px 1px 2px 0px rgba(254, 133, 33, 0.9);
+}
+.panel-container.show-search .bottom-panel {
+  -webkit-transform: translate(0, 50px);
+          transform: translate(0, 50px);
+  box-shadow: 0px -1px 2px 0px rgba(254, 133, 33, 0.9);
+}
+.panel-container.show-search .search-container .search-button {
+  -webkit-transform: translate(-150px, 0);
+          transform: translate(-150px, 0);
+  box-shadow: none;
+  -webkit-transition: -webkit-transform 0.5s ease-in-out 0.5s;
+  transition: -webkit-transform 0.5s ease-in-out 0.5s;
+  transition: transform 0.5s ease-in-out 0.5s;
+  transition: transform 0.5s ease-in-out 0.5s, -webkit-transform 0.5s ease-in-out 0.5s;
+  cursor: default;
+}
+.panel-container.show-search .search-container input {
+  visibility: visible;
+  width: 300px;
+  position: relative;
+  -webkit-transition: all 0.5s ease-in-out 1s;
+  transition: all 0.5s ease-in-out 1s;
+}
+.panel-container.show-results .top-panel {
+  box-shadow: none;
+  -webkit-transform: translate(0, -100%);
+          transform: translate(0, -100%);
+  -webkit-transition: -webkit-transform 0.5s ease-in-out 0s;
+  transition: -webkit-transform 0.5s ease-in-out 0s;
+  transition: transform 0.5s ease-in-out 0s;
+  transition: transform 0.5s ease-in-out 0s, -webkit-transform 0.5s ease-in-out 0s;
+}
+.panel-container.show-results .bottom-panel {
+  box-shadow: none;
+  -webkit-transform: translate(0, 100%);
+          transform: translate(0, 100%);
+  -webkit-transition: -webkit-transform 0.5s ease-in-out 0s;
+  transition: -webkit-transform 0.5s ease-in-out 0s;
+  transition: transform 0.5s ease-in-out 0s;
+  transition: transform 0.5s ease-in-out 0s, -webkit-transform 0.5s ease-in-out 0s;
+}
+.panel-container.show-results .search-container {
+  -webkit-transition: all 0.5s ease-in-out 1s;
+  transition: all 0.5s ease-in-out 1s;
+  top: 0;
+}
+.panel-container.show-results .search-container .search-button {
+  background: transparent;
+  box-shadow: none;
+}
 </style>
+</head>
 
-<form id="searchbox" onsubmit="return false">
-  <input type="text" class="textbox" placeholder="Search" id="searchvalue">
-  <input title="Search" value="查" type="submit" class="button" onclick="getvalue()">
-</form>
+<body>
+<div class="panel-container">
+  <div class="top-panel"></div>
+  <div class="search-container">
+    <form>
+      <button type="button" class="search-button"><i class="glyphicon glyphicon-search"></i></button>
+      <input type="text" class="search-input" placeholder="搜索。。。">
+    </form>
+  </div>
+  <div class="bottom-panel"></div>
+</div>
 
-<div class="loader" id="theloader"></div>
-
+<div class="content">
+  <ul class="results">
+    <br>
+    <br>
+  <!--   <img src="https://chinaccelerator.com/wp-content/uploads/2017/05/ocheng-en-logo-backgrounded.png" alt="ocheng logo"> -->
+  </ul>
+</div>
+  <button id= "b1"  onclick="budui()" >不对</button>
+  <button id= "b2"  onclick="dui()" >对</button>
+    <button id= "b3"  onclick="fumian()" >负面</button>
+      <button id= "b4"  onclick="zhongxing()" >中性</button>
+        <button id= "b5"  onclick="zhengmian()" >正面</button>
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script type="text/javascript">
-	document.body.style.zoom="75%"
-	var icontitle5=document.body.appendChild(document.createElement('div'));
-	var icontitle55=document.body.appendChild(document.createElement('div'));
-	var icontitle4=document.body.appendChild(document.createElement('div'));
-	var icontitle44=document.body.appendChild(document.createElement('div'));
-	var icontitle3=document.body.appendChild(document.createElement('div'));
-	var icontitle33=document.body.appendChild(document.createElement('div'));
-	var icontitle2=document.body.appendChild(document.createElement('div'));
-	var icontitle22=document.body.appendChild(document.createElement('div'));
-	var icontitle1=document.body.appendChild(document.createElement('div'));
-	var icontitle11=document.body.appendChild(document.createElement('div'));
 
-var icontitle=document.body.appendChild(document.createElement('div'));
+     <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script> 
+<script>
+ var config = {
+    apiKey: "AIzaSyDBJi4p8SjZLFDf-iFKc8ZstkXyy2FLkV4",
+    authDomain: "gongyinao.firebaseapp.com",
+    databaseURL: "https://gongyinao.firebaseio.com",
+    projectId: "gongyinao",
+    storageBucket: "gongyinao.appspot.com",
+    messagingSenderId: "792226516451"
+  };
+  firebase.initializeApp(config);
 
-document.getElementById('theloader').style.visibility='hidden';
-	var peopleicon=document.getElementById('searchbox'); 
-peopleicon.style.position="absolute";
-peopleicon.style.left = 500+'px';//20
-peopleicon.style.top = 10+'px';//20
+//activate database
+  var database = firebase.database();
+
+var visualalgo = document.body.appendChild(document.createElement('div'));
+document.getElementById('b1').style.visibility ='hidden';
+document.getElementById('b2').style.visibility ='hidden';
+document.getElementById('b3').style.visibility ='hidden';
+document.getElementById('b4').style.visibility ='hidden';
+document.getElementById('b5').style.visibility ='hidden';
+  var poshao =0;
+  var neghao=0;
+var neuhao=0;
+  var inputs;
+    var rainy;
+    
+var zhishiku =new Array;
+var zhishikunegative =new Array;
+var zhishikupositive =new Array;
+var makepositive=0;
+    
+
+var uselesswords =["这","那", "然", "先","我","你","呢","到","也","您","多","就","着","此","次","说","回","前","国","让","动","出","去","吃","是","些","据","跟","根","西","东","北","南","位","与","于","只", "之","后","儿","而","一","二","貳","叁","三","肆","四","伍","五","六","陆","七","柒","气","捌","八","九","玖","十","拾","为","什","么","吗","关","百","亿","不","对","仅","刘","等","得","的","家","们","门","个","了","谁", "她", "他", "它","字","子"]
+var neutraladj= new Array();
+var posadj = new Array();//forcalculations
+//posadj = ["雄伟","漂亮","美丽","方便","了不起","美女","帅","高兴","心情","激动","笑","爱情","善良","聪明","帅哥","香醇","透明","晶莹","纯净","典雅","开朗","舒适","清澈","颓废","温柔","惊艳","淡漠","淡定","冷静","端庄","时尚","快乐","丰盈", "圆滑", "喜欢","满意","特别","厉害","爱","好"];
+var negadj = new Array();//for calculations
+ //negadj =["紧张","忧虑","愤怒","害怕","野蛮","隐晦","阴霾","恐龙","伤心","生气","伪装","杀", "我靠", "我操", "傻逼", "哭泣","哭粗","笨","很差","丑","沮丧","郁闷", "悲伤", "悲", "伤害", "吵架", "打架","讨厌"];
+var negcounter = ["不","坏","没"];
+var neutralcounter =["太","非常","很"];
+
+var sendpos = new Array();
+var sendneg = new Array();
+
+  var visualalgo4 = document.body.appendChild(document.createElement('div4'));
+
+// var msg2 ='negative'
+//       var ref2=database.ref(msg2);
+// ref2.push(negadj);
+getpositive();
+function getpositive () {
+
+var ref = database.ref('positive')
+ref.on('value',gotData, errData);
+
+function gotData(data) {
+//console.log(data.val())
+var coordinates =data.val();
+//console.log(coordinates)
+var keys = Object.keys(coordinates)
+console.log(coordinates)
+for(var i=0; i<keys.length;i++) {
+
+  var p=keys[i];
+
+var shuju=coordinates[p]
+
+posadj=shuju;
+
+ 
+}
+
+  posadj=data.val();
+
+
+//console.log('inside positive', posadj)
+}
+function errData(err) {
+   console.log(err)
+}
+
+
+}
+var grandnumber;
+
+getlearningrate();
+
+function getlearningrate () {
+console.log('hello')
+var ref = database.ref('sum')
+ref.on('value',gotData, errData);
+var playersRef = ref;
+
+// playersRef.orderByChild("sum").on("child_added", function(data) {
+//    console.log(data.val());
+//    grandnumber=data.val();
+// });
+
+function gotData(data) {
+ grandnumber=data.val();
+  grandnumber =grandnumber[0];
+ console.log('magic', grandnumber)
 
 
 
 
+
+}
+function errData(err) {
+   console.log(err)
+}
+
+
+}
+
+getnegative();
+function getnegative () {
+
+var ref = database.ref('negative')
+ref.on('value',gotData, errData);
+
+function gotData(data) {
+console.log(data.val())
+var coordinates =data.val();
+console.log(coordinates)
+var keys = Object.keys(coordinates)
+console.log(coordinates)
+for(var i=0; i<keys.length;i++) {
+
+  var p=keys[i];
+
+var shuju=coordinates[p]
+
+negadj=shuju;
+
+ 
+}
+
+  negadj=data.val();
+
+
+//console.log('inside', negadj)
+}
+function errData(err) {
+   console.log(err)
+}
+
+
+}
+
+
+var enterwaspressed=0;
+
+// 
+
+var selfknowledge = posadj.concat(negadj).concat(negcounter).concat(neutralcounter);
+console.log('my knowledge', selfknowledge)
+
+
+var doublenegative=0;
+    var animationTime = 500;
+
+
+$(function() {
+  init();
+
+  var that = this;
+  $(".search-input").on("keydown", function(e) {
+    var val = $(this).val();
+    if (e.keyCode == 13) {
+      doublenegative=0;
+      enterwaspressed=1;
+    
+      console.log(grandnumber, 'pee')
+      //reset counters
+      //visualalgo.style.visibility ='visible';
+      document.getElementById('b1').style.visibility ='hidden';
+document.getElementById('b2').style.visibility ='hidden';
+      poshao =0;
+     neghao=0;
+     neuhao=0;
+     doublenegative=0;
+     //
+getnegative();
+getpositive();
+
+    setTimeout(ai, 4000)
+      e.preventDefault();
+      if (!val) {
+        return;
+      }
+      hideResults();
+
+      // Do some AJAX call here to get results
+      getSearchResults(val).then(function(results) {
+        // Do something with results here before calling showResults
+        //
+        //
+        showResults();
+      });
+    }
+  });
+
+  function init() {
+    var searchButton = $(".search-button");
+    searchButton.on("click", function(e) {
+      var panelContainer = $(".panel-container");
+      if (!panelContainer.hasClass("show-search")) {
+        panelContainer.addClass("show-search");
+        setTimeout(function() {
+          $(".search-input").focus();
+        }, animationTime * 3);
+      }
+    });
+  }
+
+  function getSearchResults(val) {
+    return new Promise(function(resolve, reject) {
+      var results = [];
+
+      setTimeout(function() {
+        resolve(results);
+      }, 2000);
+    });
+  }
+
+  function showResults() {
+    var panelContainer = $(".panel-container");
+    var results = $(".results");
+    var searchIcon = $(".search-button i");
+
+    panelContainer.addClass("show-search show-results");
+    searchIcon.toggleClass("glyphicon-search glyphicon-refresh spinning");
+    results.addClass("show");
+
+    // After first run, change result.show class to have no transition animation delay
+    if (!results.hasClass("no-wait")) {
+      setTimeout(function() {
+        results.addClass("no-wait");
+      }, animationTime * 2);
+    }
+  }
+
+  function hideResults() {
+    var panelContainer = $(".panel-container");
+    var results = $(".results");
+    var searchIcon = $(".search-button i");
+
+    if (!panelContainer.hasClass("show-results")) {
+      panelContainer.removeClass("show-search");
+    }
+
+    results.removeClass("show");
+    searchIcon.toggleClass("glyphicon-search glyphicon-refresh spinning");
+  }
+});
+
+
+
+function ai () {
+  //save sum
+
+var budebu=0;
+makepositive=0;
+
+ inputs =  $(".search-input").val();
+ if (inputs.indexOf("不得不")>-1 ||inputs.indexOf("而不")>-1 ||inputs.indexOf("不了")>-1 ) {
+  budebu=1;
+  console.log('i am budebu')
+ }
+ console.log('posadj = zhishikupositive', posadj)
+     console.log('negadj = zhishikunegative', negadj)
+
+if (zhishikupositive.length>=1) {
+posadj=zhishikupositive;
+console.log('posadj = zhishikupositive')
+}
+
+if (zhishikunegative.length>=1) {
+  negadj=zhishikunegative;
+  console.log('negadj = zhishikunegative')
+}
+
+
+for(var p=0; p< posadj.length;p++) {
+var compare = posadj[p];
+//console.log(compare)
+
+if (inputs.indexOf(compare)>-1) {
+  console.log('positve 12345',compare, inputs)
+
+  poshao++
+
+  //meiyou rule. 
+
+  if(inputs.indexOf("没有")>-1 ) {
+
+    var checkindex =inputs.split(" "); 
+    var checkindex2 = inputs.indexOf("没");
+      var checkindex3 = inputs.indexOf(compare);
+
+    var tyu= checkindex3-checkindex2;
+console.log('trg',checkindex, tyu,checkindex2,checkindex3)
+    if (tyu<=4) {
+      neghao+=2; 
+      console.log("counter positive")
+    }
+  }
+}
+
+
+}
+
+
+//negative
+
+for(var z=0; z< negadj.length;z++) {
+var compare = negadj[z];
+//console.log(compare)
+
+if (inputs.indexOf(compare)>-1) {
+  neghao++
+  console.log('nhl',compare)
+  // if (inputs.indexOf("我不") >-1) {
+  //   neghao+=2;
+  // }
+
+  var index = inputs.indexOf(compare);
+var index2 = inputs.indexOf('但');
+var secondindex = index2 - index;
+
+if (secondindex<=2&&inputs.indexOf('但')>1) {
+  console.log('dan rule');
+  neghao=neghao-1;
+}
+
+//if bu is after a negative word 无知不是错
+var splitwords = inputs.slice(" ");
+var buindex = splitwords.indexOf("不");
+var meindex = splitwords.indexOf("没");
+var cancel=0;
+var check=compare.slice(" ");
+if (check.indexOf("不")>-1) {
+  console.log('blanket')
+cancel=1;
+}
+if (cancel==0) {
+if (index < buindex || index< meindex) {
+  neghao=neghao-2;
+  console.log('denzel',splitwords,buindex,meindex,index)
+}
+
+}
+
+}
+
+
+
+}
+
+
+
+//negcounter
+var checj=0;
+for(var z=0; z< inputs.length;z++) {
+var compare = inputs[z];
+
+console.log(compare)
+
+
+if (negcounter.indexOf(compare)>-1) {
+
+//   if ((doublenegative==1 && negadj.indexOf(compare)>-1) {
+
+
+//   console.log("WTF positive")
+// }
+doublenegative++;
+
+
+console.log("WTF negative")
+//dan rule
 
     
- function getvalue () {
-    	console.log(document.getElementById('searchvalue').value);
-
-    	var thevalue = document.getElementById('searchvalue').value;
-
+    }
+  //neghao++
+}
 
 
 
- icontitle.style.position="absolute";
- icontitle.style.left = 510+'px';//50
- icontitle.style.top = 340+'px';//20
- icontitle.style.fontSize='20px';
- icontitle.style.color = 'black';
- icontitle.innerHTML = 'Analyzing information about the Stock';
+//double negative section
 
-	var peopleicon=document.getElementById('theloader'); 
-peopleicon.style.visibility = 'visible';
-peopleicon.style.position="absolute";
-peopleicon.style.left = 590+'px';//20
-peopleicon.style.top = 380+'px';//20
+if (inputs.indexOf("不不")>-1&&doublenegative<3) {
+  doublenegative=2;
+}
 
 
-setTimeout(sendresults, 2000);
 
-function sendresults () {
-	 icontitle.innerHTML = '';
-	  icontitle5.innerHTML = '';
-	   icontitle55.innerHTML = '';
-	   icontitle1.innerHTML = '';
-	   icontitle11.innerHTML = '';
-	    icontitle2.innerHTML = '';
-	   icontitle22.innerHTML = '';
-	    icontitle3.innerHTML = '';
-	   icontitle33.innerHTML = '';
-	    icontitle4.innerHTML = '';
-	   icontitle44.innerHTML = '';
-	    icontitle5.innerHTML = '';
-	   icontitle55.innerHTML = '';
-	document.getElementById('theloader').style.visibility='hidden';
+//neutral
 
+for(var z=0; z< neutralcounter.length;z++) {
+var compare = neutralcounter[z];
+//console.log(compare)
 
-//var icontitle5=document.body.appendChild(document.createElement('div'));
- icontitle5.style.position="absolute";
- icontitle5.style.left = 580+'px';//50
- icontitle5.style.top = 110+'px';//20
- icontitle5.style.fontSize='20px';
- icontitle5.style.color = 'blue';
- icontitle5.innerHTML = '5  stock';
-
-// var icontitle55=document.body.appendChild(document.createElement('div'));
- icontitle55.style.position="absolute";
- icontitle55.style.left = 580+'px';//50
- icontitle55.style.top = 140+'px';//20
- icontitle55.style.fontSize='20px';
- icontitle55.style.color = 'black';
- icontitle55.innerHTML = '5  stock';
-
-
-//var icontitle1=document.body.appendChild(document.createElement('div'));
- icontitle1.style.position="absolute";
- icontitle1.style.left = 10+'px';//50
- icontitle1.style.top = 210+'px';//20
- icontitle1.style.fontSize='20px';
- icontitle1.style.color = 'blue';
- icontitle1.innerHTML = '1 stock';
-
- //var icontitle11=document.body.appendChild(document.createElement('div'));
- icontitle11.style.position="absolute";
- icontitle11.style.left = 10+'px';//50
- icontitle11.style.top = 240+'px';//20
- icontitle11.style.fontSize='20px';
- icontitle11.style.color = 'black';
- icontitle11.innerHTML = '1 stock';
-
-
- //var icontitle2=document.body.appendChild(document.createElement('div'));
- icontitle2.style.position="absolute";
- icontitle2.style.left = 10+'px';//50
- icontitle2.style.top = 710+'px';//20
- icontitle2.style.fontSize='20px';
- icontitle2.style.color = 'blue';
- icontitle2.innerHTML = '2 stock';
-
- //var icontitle22=document.body.appendChild(document.createElement('div'));
- icontitle22.style.position="absolute";
- icontitle22.style.left = 10+'px';//50
- icontitle22.style.top = 740+'px';//20
- icontitle22.style.fontSize='20px';
- icontitle22.style.color = 'black';
- icontitle22.innerHTML = '2 stock';
-
-
-//var icontitle3=document.body.appendChild(document.createElement('div'));
- icontitle3.style.position="absolute";
- icontitle3.style.left = 1010+'px';//50
- icontitle3.style.top = 310+'px';//20
- icontitle3.style.fontSize='20px';
- icontitle3.style.color = 'blue';
- icontitle3.innerHTML = '3 stock';
-
-
- //var icontitle33=document.body.appendChild(document.createElement('div'));
- icontitle33.style.position="absolute";
- icontitle33.style.left = 1010+'px';//50
- icontitle33.style.top = 380+'px';//20
- icontitle33.style.fontSize='20px';
- icontitle33.style.color = 'black';
- icontitle33.innerHTML = '3 stock';
-
-  //var icontitle4=document.body.appendChild(document.createElement('div'));
- icontitle4.style.position="absolute";
- icontitle4.style.left = 1010+'px';//50
- icontitle4.style.top = 610+'px';//20
- icontitle4.style.fontSize='20px';
- icontitle4.style.color = 'blue';
- icontitle4.innerHTML = '4 stock';
-
-  // var icontitle44=document.body.appendChild(document.createElement('div'));
- icontitle44.style.position="absolute";
- icontitle44.style.left = 1010+'px';//50
- icontitle44.style.top = 680+'px';//20
- icontitle44.style.fontSize='20px';
- icontitle44.style.color = 'black';
- icontitle44.innerHTML = '4 stock';
-
-
-	if (thevalue=='apple stock') {
-		
-		 icontitle1.innerHTML = 'https://finance.yahoo.com/quote/AAPL/ ';
-		  icontitle11.innerHTML = '190.24+3.37 (+1.80%)';
-		  icontitle11.style.color='green';
-
-		  icontitle2.innerHTML = 'https://www.cnbc.com/2018/05/04/if-you-put-1000-in-apple-10-years-ago-heres-how-much-youd-have-now.html';
-		  icontitle22.innerHTML = '"Investing in Apple has proven to be a good move, and expert investors are taking notice"';
-		  icontitle22.style.color='green';
-
-
-		   icontitle3.innerHTML = 'https://www.marketwatch.com/story/apple-stock-rises-after-ubs-hikes-price-target-due-to-rising-mix-2018-06-01';
-
-		    icontitle33.innerHTML = '"Apple Inc. AAPL, +0.04% shares are up 0.8% in Friday trading after UBS analyst Steven Milunovich raised his price."';
-		  icontitle33.style.color='green';
-
-		    icontitle4.innerHTML = 'https://www.fool.com/investing/2018/05/30/apple-inc-vs-texas-instruments-which-dividend-stoc.aspx';
-		     icontitle44.innerHTML = '"Texas Instruments is probably a better stock for investors looking for meaningful income today"';
-		  icontitle44.style.color='red';
-
-		     icontitle5.innerHTML = 'https://www.nasdaq.com/symbol/aapl/historical';
-
-		       icontitle55.innerHTML = '"$190.25*  3.381.81%"';
-		  icontitle55.style.color='green';
-
-		  icontitle.innerHTML = 'Apple Stock looks good, you could keep or sell.';
-
-	}
-
-	if (thevalue=='bitcoin') {
-		 icontitle1.innerHTML = 'https://cointelegraph.com/news/bitcoin-ethereum-ripple-bitcoin-cash-eos-litecoin-cardano-stellar-iota-price-analysis-june-01';
-		  icontitle11.innerHTML = 'We believe that Bitcoin is trading in a large range of $6,075.04 to $12,172.43';
-		  icontitle11.style.color='orange';
-
-		  icontitle2.innerHTML = 'https://www.ccn.com/bitcoin-price-has-bottomed-and-will-rally-soon-fundstrat-analyst/';
-		  icontitle22.innerHTML = '"Bitcoin’s price has hit rock-bottom"';
-		  icontitle22.style.color='red';
-
-
-		   icontitle3.innerHTML = 'https://www.express.co.uk/finance/city/968262/Bitcoin-price-usd-news-share-cryptocurrency-ethereum-Ripple-buy-bitcoin-value';
-
-		    icontitle33.innerHTML = '"The finance expert studied bitcoin, ethereum and Ripple and found that a bullish mid-term event could be in store as the cryptocurrencies continue to attract buyers."';
-		  icontitle33.style.color='green';
-
-		    icontitle4.innerHTML = 'https://www.cnbc.com/2018/05/31/buy-bitcoin-now-while-its-still-cheap-says-cryptocurrency-investor.html';
-		     icontitle44.innerHTML = '"So now is a good time to buy."';
-		  icontitle44.style.color='green';
-
-		     icontitle5.innerHTML = 'https://cointelegraph.com/news/visa-card-payments-failing-in-uk-europe-highlighting-need-for-decentralized-options';
-
-		       icontitle55.innerHTML = '"Visa has said that their card payments are experiencing disruptions "';
-		  icontitle55.style.color='green';
-
-		  icontitle.innerHTML = 'news about Bitcoin seems moderate.';
-	}
-
-
-	if (thevalue=='baidu stock') {
-		 icontitle1.innerHTML = 'https://finance.yahoo.com/quote/BIDU/';
-		  icontitle11.innerHTML = '248.46+5.90 (+2.43%)';
-		  icontitle11.style.color='green';
-
-		  icontitle2.innerHTML = 'https://finance.yahoo.com/news/baidu-inc-adr-225-looks-170908209.html';
-		  icontitle22.innerHTML = '"BIDU stock is firing on all cylinders these days and worth investors"';
-		  icontitle22.style.color='green';
-
-
-		   icontitle3.innerHTML = 'https://investorplace.com/2018/05/baidu-inc-adr-bidu-stock-how-looks-reasonable/';
-
-		    icontitle33.innerHTML = '"BIDU stock cooperates and new highs are narrowly made over the next couple months, reaching above $280"';
-		  icontitle33.style.color='green';
-
-		    icontitle4.innerHTML = 'https://seekingalpha.com/article/4170891-baidu-lot-like';
-		     icontitle44.innerHTML = '"Baidu (BIDU) shares are still rallying since the company announced its most recent quarterly earnings on the 26th of April"';
-		  icontitle44.style.color='green';
-
-		     icontitle5.innerHTML = 'https://www.fool.com/investing/2018/05/22/when-will-baidu-stock-hit-a-new-all-time-high.aspx';
-
-		       icontitle55.innerHTML = '"Investors have been applauding Baidu\'s move to get back to basics, even as it continues to throw money at artificial intelligence initiative"';
-		  icontitle55.style.color='green';
-
-		  icontitle.innerHTML = 'Baidu Stock looks good, you could keep or sell.';
-	}
+if (inputs.indexOf(compare)>-1) {
+  //neuhao++;
+  // neghao-2;
+  // poshao-2;
 }
 
 
 
 
- //  'https://finance.yahoo.com/quote/BIDU/',
- //  'https://finance.yahoo.com/news/baidu-inc-adr-225-looks-170908209.html',
- //  'https://investorplace.com/2018/05/baidu-inc-adr-bidu-stock-how-looks-reasonable/',
- //  'https://investorplace.com/2018/05/bidu-stock-good-reasons/',
- //  'https://www.marketwatch.com/investing/stock/bidu',
- //  'https://www.fool.com/investing/2018/05/22/when-will-baidu-stock-hit-a-new-all-time-high.aspx',
- //  'https://www.fool.com/quote/nasdaq/baidu/bidu',
- //  'https://www.fool.com/investing/2018/05/18/why-baidu-inc-stock-dropped-today.aspx',
- //  'https://seekingalpha.com/article/4170891-baidu-lot-like'
+}
+
+
+
+
+
+for(var i=0; i<neutralcounter.length; i++) {
+  var lop = neutralcounter[i];
+  var pop = inputs.indexOf(lop);
+
+  var index = pop + 1;
+var final = inputs[index];
+console.log('final', final)
+//      if (negadj.indexOf(final) > -1 || negcounter.indexOf(final) > -1) {
+// makepositive=1;
+//      }
+
+}
+var itsneutral;
+
+
+
+
+for(var i=0; i<inputs.length; i++) {
+var compare = inputs[z];
+
+var dontincrease=0; 
+if (posadj.indexOf(compare)>-1||negadj.indexOf(compare)>-1 ) {
+  console.log("WTF")
+dontincrease=1;
+}
+
+if (negadj.indexOf(compare)>-1) {
+   var pop = inputs.indexOf(compare);
+   var before = pop-1;
+   var after = pop + 1;
+
+var stringbefore = inputs[before];
+var stringafter = inputs[after];
+   if (stringbefore==stringafter) {
+    console.log('SAME WORD', stringbefore);
+    neghao=0; 
+    itsneutral=1;
+   }
+}
+if (dontincrease==0) {
+  neuhao+=0.2;
+}
+
+}
+
+//end neutral
+
+
+////check our knowledge
 
 
 
 
 
 
- //    	 'https://finance.yahoo.com/quote/AAPL/',
- //  'https://www.cnbc.com/2018/05/04/if-you-put-1000-in-apple-10-years-ago-heres-how-much-youd-have-now.html',
- //  'https://www.marketwatch.com/story/apple-stock-rises-after-ubs-hikes-price-target-due-to-rising-mix-2018-06-01',
- //  'https://www.marketwatch.com/story/if-apple-makes-big-news-at-its-developers-conference-next-week-it-would-be-big-news-2018-06-01',
- //  'https://stocktwits.com/symbol/AAPL',
- //  'https://www.investors.com/news/technology/click/apple-stock-aapl-price-target-increase-wwdc/',
- //  'https://www.nasdaq.com/symbol/aapl/historical',
- //  'https://www.fool.com/investing/2018/05/30/apple-inc-vs-texas-instruments-which-dividend-stoc.aspx'
+//brotha
+var checkneutralonot = neuhao-neghao;
+var checkneutralonot2 = neuhao-poshao;
+if (checkneutralonot>=15 ||checkneutralonot2>=15 ) {//|| (makepositive==1 && neghao>poshao)
+  itsneutral=1;
+  console.log('my new brain',zhishiku)
+}
+
+var negate=0;
+// if(neghao>=1 && (doublenegative==2||doublenegative==3)) {
+// poshao+=3;
+// }
+
+
+if (neghao>=1 && doublenegative==1) {
+  makepositive=1;
+}
+
+if (neghao>=1 && doublenegative==2) {
+  makepositive=0;
+  neghao=11;
+  console.log('why insrf')
+}
+////pos
+
+if (poshao>=1 && doublenegative==1) {
+   makepositive=0;
+  neghao=11;
+}
+
+if (poshao>=1 && doublenegative==2) {
+   makepositive=1;
+  console.log('why insrf')
+}
+
+console.log('WHAT THE HELL', doublenegative)
+
+
+if (doublenegative==1 && inputs.indexOf("不错")>-1) {
+  doublenegative=0; 
+}
+//
+if (poshao==0 && neghao==0 && doublenegative==0) {
+    console.log('caught it2')
+  itsneutral=1;
+}
+var diff = poshao-neghao;
+
+if (diff==0 && neuhao>poshao && neuhao>neghao && neghao>=1) {
+  itsneutral=1;
+  console.log('caught it')
+}
+
+if (budebu==1) {//||inputs.length>10
+  doublenegative=doublenegative-1;
+   console.log('change double')
+}
+if (doublenegative==1||doublenegative==3) {
+  neghao++;
+  console.log('change add')
+  poshao=poshao-1;
+}
+
+if (poshao>=neuhao ||neghao>=neuhao) {
+  negate==1; 
+}
+console.log('output', poshao,neghao,neuhao,makepositive,doublenegative)
+console.log(makepositive)
+
+if (poshao>neghao || makepositive==1) {
+console.log('WHjjj', poshao, neghao, makepositive)
+  if (poshao>=1 || doublenegative>=1) {
+  negate=1;
+}
+ visualalgo.style.position="absolute";
+ visualalgo.style.fontSize='60px';
+visualalgo.style.left = 410+'px';
+  visualalgo.style.top = 250+'px';
+   var array = ['turquoise','pink','orange','chartreuse','cyan'];
+ var color =  array[Math.floor(Math.random()*array.length)];
+visualalgo.style.color = 'turquoise';
+
+  visualalgo.innerHTML = '感情 = 正面';
+
+
+  }
+
+  if (inputs.length<5&&poshao==neghao) {
+  //makepositive=1;
+ 
+
+}
+ // console.log('他不听我', itsneutral,poshao,neghao,negate)
+if (neghao>=poshao && neghao>=1 && negate==0 ||(doublenegative==1 && itsneutral==0)) {
+  negate=1;
+  
+   
+       visualalgo.style.position="absolute";
+visualalgo.style.fontSize='60px';
+visualalgo.style.left = 410+'px';
+  visualalgo.style.top = 250+'px';
+   visualalgo.style.color = 'red';
+      visualalgo.innerHTML = '感情 = 负面';
+  // document.getElementById("image").src="sadcloud.gif";
+}
 
 
 
-// 'https://news.bitcoin.com/',
-//   'https://cointelegraph.com/news/bitcoin-ethereum-ripple-bitcoin-cash-eos-litecoin-cardano-stellar-iota-price-analysis-june-01',
-//   'https://www.ccn.com/bitcoin-price-has-bottomed-and-will-rally-soon-fundstrat-analyst/',
-//   'https://www.ccn.com/no-bull-run-in-sight-investors-target-long-term-bitcoin-price-rally/',
-//   'https://www.express.co.uk/finance/city/968262/Bitcoin-price-usd-news-share-cryptocurrency-ethereum-Ripple-buy-bitcoin-value',
-//   'https://www.cnbc.com/2018/05/31/buy-bitcoin-now-while-its-still-cheap-says-cryptocurrency-investor.html',
-//   'https://twitter.com/btctn%3Flang%3Den',
-//   'https://www.youtube.com/watch%3Fv%3DHrd1eHecpRA',
-//   'https://cryptonews.com/news/bitcoin-news/'
+if (negate==0 || itsneutral==1) {
+
+if (((neuhao>poshao&&neuhao>neghao)) || itsneutral==1) {
+ 
+       visualalgo.style.position="absolute";
+visualalgo.style.fontSize='60px';
+visualalgo.style.left = 410+'px';
+  visualalgo.style.top = 250+'px';
+
+   visualalgo.style.color = 'lime';
+      visualalgo.innerHTML = '感情 = 中性';
+  // document.getElementById("image").src="normalbot.gif";
+}
+}
+visualalgo.style.visibility ='visible';
+
+showaccuracy();
+//button1
+document.getElementById('b1').style.visibility ='visible';
+var positionbutton1 = document.getElementById('b1');
+positionbutton1.style.position="absolute";
+positionbutton1.style.left = 700+'px';
+  positionbutton1.style.top = 450+'px';
+//button2
+document.getElementById('b2').style.visibility ='visible';
+var positionbutton2 = document.getElementById('b2');
+positionbutton2.style.position="absolute";
+positionbutton2.style.left = 410+'px';
+  positionbutton2.style.top = 450+'px';
 
 
 
 
+}
+
+function showaccuracy () {
+
+
+
+   //4
+    visualalgo4.style.position="absolute";
+
+visualalgo4.style.left = 680+'px';
+  visualalgo4.style.top = 150+'px';
+    visualalgo4.innerHTML = '';
+      visualalgo4.innerHTML = 'Accuracy Rate = '+grandnumber+'%';
+
+
+}
+
+
+
+function dui () {
+// var positionbutton2 = document.getElementById('b2');
+visualalgo.style.position="absolute";
+visualalgo.style.left = 410+'px';
+  visualalgo.style.top = 250+'px';
+  visualalgo.innerHTML='谢谢你。'
+
+}
+
+function budui () {
+  console.log('zhao kunchong', posadj)
+visualalgo.style.visibility ='hidden';
+document.getElementById('b1').style.visibility ='hidden';
+document.getElementById('b2').style.visibility ='hidden';
+//b3 negative
+document.getElementById('b3').style.visibility ='visible';
+var positionbutton3 = document.getElementById('b3');
+positionbutton3.style.position="absolute";
+positionbutton3.style.left = 310+'px';
+  positionbutton3.style.top = 280+'px';
+
+  ///b4 neutral
+
+  document.getElementById('b4').style.visibility ='visible';
+var positionbutton4 = document.getElementById('b4');
+positionbutton4.style.position="absolute";
+positionbutton4.style.left = 520+'px';
+  positionbutton4.style.top = 280+'px'; 
+
+//positve
+  document.getElementById('b5').style.visibility ='visible';
+var positionbutton5 = document.getElementById('b5');
+positionbutton5.style.position="absolute";
+positionbutton5.style.left = 780+'px';
+  positionbutton5.style.top = 280+'px';
+
+
+
+}
+
+
+
+
+/////hand pick words in input
+
+
+var text;
+$(".search-input").click(function(e) {
+  if (enterwaspressed==1) {
+  //enterwaspressed=0;
+     text = $(".search-input").val();
+    if (window.getSelection) {
+        text = window.getSelection().toString();
+    } else if (document.selection && document.selection.type != "Control") {
+        text = document.selection.createRange().text;
     }
+    console.log(text);
+
+  }
+});
 
 
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+//specify these hand picked words
+
+function fumian () {
+  grandnumber =grandnumber + 0.002;
+
+for(var i=0; i<inputs.length;i++) {
+
+  var checkneuron = inputs[i];
+      var newinformation=0; 
+      if (selfknowledge.indexOf(checkneuron)> -1 || checkneuron==',' || checkneuron=='.'|| checkneuron=='。'||checkneuron=='?'||checkneuron=='，'||uselesswords.indexOf(checkneuron)>-1) {
+            
+newinformation=1;
+      }
+      if (newinformation==0) {
+        sendneg.push(checkneuron);
+      }
+
+}
+if (enterwaspressed==1&&text.length>=1) {
+sendneg=text;
+}
+document.getElementById('b3').style.visibility ='hidden';
+document.getElementById('b4').style.visibility ='hidden';
+document.getElementById('b5').style.visibility ='hidden';
+console.log(zhishikunegative)
+   var ref=database.ref('negative');
+negadj=negadj.concat(sendneg);
+zhishikunegative=negadj;
+sendneg=[];
+var data = negadj;
+if (negadj.length<5) {
+  alert('problem with database', negadj)
+}
+if (negadj.length>5) {
+ref.set(data)
+}
+
+enterwaspressed=0;
+  savenewaccuracy();
+}
+
+
+
+///neutral
+function zhongxing () {
+  
+for(var i=0; i<inputs.length;i++) {
+
+  var checkneuron = inputs[i];
+      var newinformation=0; 
+      if (selfknowledge.indexOf(checkneuron)> -1 || checkneuron==',' || checkneuron=='.'|| checkneuron=='。'||checkneuron=='?'||checkneuron=='，'||uselesswords.indexOf(checkneuron)>-1) {
+            
+newinformation=1;
+      }
+      if (newinformation==0) {
+        zhishiku.push(checkneuron);
+      }
+
+
+}
+console.log(zhishiku)
+document.getElementById('b3').style.visibility ='hidden';
+document.getElementById('b4').style.visibility ='hidden';
+document.getElementById('b5').style.visibility ='hidden';
+enterwaspressed=0;
+  //savenewaccuracy();
+  
+}
+
+//positive
+
+function zhengmian () {
+   grandnumber =grandnumber + 0.002;
+  console.log('bug area',inputs)
+for(var i=0; i<inputs.length;i++) {
+
+  var checkneuron = inputs[i];
+      var newinformation=0; 
+      if (selfknowledge.indexOf(checkneuron)> -1 || checkneuron==',' || checkneuron=='.'|| checkneuron=='。'||checkneuron=='?'||checkneuron=='，'||uselesswords.indexOf(checkneuron)>-1) {
+            
+newinformation=1;
+      }
+      if (newinformation==0) {
+        console.log('buggg2', posadj)
+        console.log('buggg3', checkneuron)
+        sendpos.push(checkneuron);
+      }
+
+}
+document.getElementById('b3').style.visibility ='hidden';
+document.getElementById('b4').style.visibility ='hidden';
+document.getElementById('b5').style.visibility ='hidden';
+if (enterwaspressed==1&&text.length>=1) {
+sendpos=text;
+}
+console.log(zhishikupositive)
+    var ref=database.ref('positive');
+posadj=posadj.concat(sendpos);
+zhishikupositive=posadj;
+sendpos=[];
+var data = posadj;
+if (posadj.length<5) {
+  alert('problem with database', posadj)
+}
+if (posadj.length>5) {
+ref.set(data)
+}
+  enterwaspressed=0;
+    savenewaccuracy();
+}
+
+
+
+function savenewaccuracy () {
+var sum = [grandnumber,0,1,2,3];
+   var msg ='sum'
+       var ref=database.ref(msg);
+
+ref.set(sum);
+}
 </script>
-
+</body>
 </html>
